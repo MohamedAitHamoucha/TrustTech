@@ -7,59 +7,52 @@ use Illuminate\Http\Request;
 
 class TachesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addTache(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'collaborateur' => 'required|string|max:255',
+            'projet' => 'required|string|max:255',
+        ]);
+
+        $tache = new Taches();
+        $tache->nom = $validatedData['nom'];
+        $tache->collaborateur = $validatedData['collaborateur'];
+        $tache->projet = $validatedData['projet'];
+        $tache->save();
+
+        return response()->json(['message' => 'Tache added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateTache(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'collaborateur' => 'required|string|max:255',
+            'projet' => 'required|string|max:255',
+        ]);
+
+        $tache = Taches::findOrFail($id);
+        $tache->nom = $validatedData['nom'];
+        $tache->collaborateur = $validatedData['collaborateur'];
+        $tache->projet = $validatedData['projet'];
+        $tache->save();
+
+        return response()->json(['message' => 'Tache updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteTache($id)
     {
-        //
+        $tache = Taches::findOrFail($id);
+        $tache->delete();
+
+        return response()->json(['message' => 'Tache deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Taches $taches)
+    public function getTacheDetails($id)
     {
-        //
-    }
+        $tache = Taches::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Taches $taches)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Taches $taches)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Taches $taches)
-    {
-        //
+        return response()->json(['tache' => $tache]);
     }
 }

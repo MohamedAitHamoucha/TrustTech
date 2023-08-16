@@ -7,59 +7,44 @@ use Illuminate\Http\Request;
 
 class TypeProjetsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addTypeProject(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255|unique:type_projects',
+        ]);
+
+        $typeProject = new TypeProjets();
+        $typeProject->type = $validatedData['type'];
+        $typeProject->save();
+
+        return response()->json(['message' => 'Type project added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateTypeProject(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255|unique:type_projects,type,' . $id,
+        ]);
+
+        $typeProject = TypeProjets::findOrFail($id);
+        $typeProject->type = $validatedData['type'];
+        $typeProject->save();
+
+        return response()->json(['message' => 'Type project updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteTypeProject($id)
     {
-        //
+        $typeProject = TypeProjets::findOrFail($id);
+        $typeProject->delete();
+
+        return response()->json(['message' => 'Type project deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(TypeProjets $typeProjets)
+    public function getTypeProjectDetails($id)
     {
-        //
-    }
+        $typeProject = TypeProjets::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TypeProjets $typeProjets)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, TypeProjets $typeProjets)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TypeProjets $typeProjets)
-    {
-        //
+        return response()->json(['typeProject' => $typeProject]);
     }
 }

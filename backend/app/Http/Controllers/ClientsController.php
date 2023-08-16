@@ -7,59 +7,60 @@ use Illuminate\Http\Request;
 
 class ClientsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addClient(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|unique:clients',
+            'telephone' => 'required|string|max:20',
+            'societe' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+        ]);
+
+        $client = new Clients();
+        $client->nom = $validatedData['nom'];
+        $client->email = $validatedData['email'];
+        $client->telephone = $validatedData['telephone'];
+        $client->societe = $validatedData['societe'];
+        $client->adresse = $validatedData['adresse'];
+        $client->save();
+
+        return response()->json(['message' => 'Client added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateClient(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|unique:clients,email,' . $id,
+            'telephone' => 'required|string|max:20',
+            'societe' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+        ]);
+
+        $client = Clients::findOrFail($id);
+        $client->nom = $validatedData['nom'];
+        $client->email = $validatedData['email'];
+        $client->telephone = $validatedData['telephone'];
+        $client->societe = $validatedData['societe'];
+        $client->adresse = $validatedData['adresse'];
+        $client->save();
+
+        return response()->json(['message' => 'Client updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteClient($id)
     {
-        //
+        $client = Clients::findOrFail($id);
+        $client->delete();
+
+        return response()->json(['message' => 'Client deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Clients $clients)
+    public function getClientDetails($id)
     {
-        //
-    }
+        $client = Clients::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Clients $clients)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Clients $clients)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Clients $clients)
-    {
-        //
+        return response()->json(['client' => $client]);
     }
 }

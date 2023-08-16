@@ -7,59 +7,60 @@ use Illuminate\Http\Request;
 
 class CollaborateursController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addCollaborateurs(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|unique:Collaborateurss',
+            'telephone' => 'required|string|max:20',
+            'titre' => 'required|string|max:255',
+            'resource' => 'required|string|max:255',
+        ]);
+
+        $Collaborateurs = new Collaborateurs();
+        $Collaborateurs->nom = $validatedData['nom'];
+        $Collaborateurs->email = $validatedData['email'];
+        $Collaborateurs->telephone = $validatedData['telephone'];
+        $Collaborateurs->titre = $validatedData['titre'];
+        $Collaborateurs->resource = $validatedData['resource'];
+        $Collaborateurs->save();
+
+        return response()->json(['message' => 'Collaborateurs added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateCollaborateurs(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|unique:Collaborateurss,email,' . $id,
+            'telephone' => 'required|string|max:20',
+            'titre' => 'required|string|max:255',
+            'resource' => 'required|string|max:255',
+        ]);
+
+        $Collaborateurs = Collaborateurs::findOrFail($id);
+        $Collaborateurs->nom = $validatedData['nom'];
+        $Collaborateurs->email = $validatedData['email'];
+        $Collaborateurs->telephone = $validatedData['telephone'];
+        $Collaborateurs->titre = $validatedData['titre'];
+        $Collaborateurs->resource = $validatedData['resource'];
+        $Collaborateurs->save();
+
+        return response()->json(['message' => 'Collaborateurs updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteCollaborateurs($id)
     {
-        //
+        $Collaborateurs = Collaborateurs::findOrFail($id);
+        $Collaborateurs->delete();
+
+        return response()->json(['message' => 'Collaborateurs deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Collaborateurs $collaborateurs)
+    public function getCollaborateursDetails($id)
     {
-        //
-    }
+        $Collaborateurs = Collaborateurs::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Collaborateurs $collaborateurs)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Collaborateurs $collaborateurs)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Collaborateurs $collaborateurs)
-    {
-        //
+        return response()->json(['Collaborateurs' => $Collaborateurs]);
     }
 }

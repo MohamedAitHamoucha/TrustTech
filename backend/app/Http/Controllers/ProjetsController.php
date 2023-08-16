@@ -7,59 +7,76 @@ use Illuminate\Http\Request;
 
 class ProjetsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addProject(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
+            'budget' => 'required|numeric|min:0',
+            'date_debut' => 'required|date',
+            'date_fin_estimee' => 'required|date',
+            'date_fin' => 'nullable|date',
+            'etat_progression' => 'required|string|max:255',
+            'type_projet' => 'required|string|max:255',
+            'client' => 'required|string|max:255',
+            'chef_projet' => 'required|string|max:255',
+        ]);
+
+        $project = new Projets();
+        $project->titre = $validatedData['titre'];
+        $project->budget = $validatedData['budget'];
+        $project->date_debut = $validatedData['date_debut'];
+        $project->date_fin_estimee = $validatedData['date_fin_estimee'];
+        $project->date_fin = $validatedData['date_fin'];
+        $project->etat_progression = $validatedData['etat_progression'];
+        $project->type_projet = $validatedData['type_projet'];
+        $project->client = $validatedData['client'];
+        $project->chef_projet = $validatedData['chef_projet'];
+        $project->save();
+
+        return response()->json(['message' => 'Project added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateProject(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'titre' => 'required|string|max:255',
+            'budget' => 'required|numeric|min:0',
+            'date_debut' => 'required|date',
+            'date_fin_estimee' => 'required|date',
+            'date_fin' => 'nullable|date',
+            'etat_progression' => 'required|string|max:255',
+            'type_projet' => 'required|string|max:255',
+            'client' => 'required|string|max:255',
+            'chef_projet' => 'required|string|max:255',
+        ]);
+
+        $project = Projets::findOrFail($id);
+        $project->titre = $validatedData['titre'];
+        $project->budget = $validatedData['budget'];
+        $project->date_debut = $validatedData['date_debut'];
+        $project->date_fin_estimee = $validatedData['date_fin_estimee'];
+        $project->date_fin = $validatedData['date_fin'];
+        $project->etat_progression = $validatedData['etat_progression'];
+        $project->type_projet = $validatedData['type_projet'];
+        $project->client = $validatedData['client'];
+        $project->chef_projet = $validatedData['chef_projet'];
+        $project->save();
+
+        return response()->json(['message' => 'Project updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteProject($id)
     {
-        //
+        $project = Projets::findOrFail($id);
+        $project->delete();
+
+        return response()->json(['message' => 'Project deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Projets $projets)
+    public function getProjectDetails($id)
     {
-        //
-    }
+        $project = Projets::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Projets $projets)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Projets $projets)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Projets $projets)
-    {
-        //
+        return response()->json(['project' => $project]);
     }
 }

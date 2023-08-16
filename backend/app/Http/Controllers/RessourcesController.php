@@ -7,59 +7,52 @@ use Illuminate\Http\Request;
 
 class RessourcesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addResource(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255',
+            'unite' => 'required|string|max:255',
+            'fournisseur' => 'required|string|max:255',
+        ]);
+
+        $resource = new Ressources();
+        $resource->type = $validatedData['type'];
+        $resource->unite = $validatedData['unite'];
+        $resource->fournisseur = $validatedData['fournisseur'];
+        $resource->save();
+
+        return response()->json(['message' => 'Resource added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateResource(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255',
+            'unite' => 'required|string|max:255',
+            'fournisseur' => 'required|string|max:255',
+        ]);
+
+        $resource = Ressources::findOrFail($id);
+        $resource->type = $validatedData['type'];
+        $resource->unite = $validatedData['unite'];
+        $resource->fournisseur = $validatedData['fournisseur'];
+        $resource->save();
+
+        return response()->json(['message' => 'Resource updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteResource($id)
     {
-        //
+        $resource = Ressources::findOrFail($id);
+        $resource->delete();
+
+        return response()->json(['message' => 'Resource deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Ressources $ressources)
+    public function getResourceDetails($id)
     {
-        //
-    }
+        $resource = Ressources::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Ressources $ressources)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Ressources $ressources)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Ressources $ressources)
-    {
-        //
+        return response()->json(['resource' => $resource]);
     }
 }

@@ -7,59 +7,56 @@ use Illuminate\Http\Request;
 
 class RessourceProjetsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addResourceProject(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'quantite' => 'required|numeric|min:0',
+            'prix' => 'required|numeric|min:0',
+            'ressource' => 'required|string|max:255',
+            'projet' => 'required|string|max:255',
+        ]);
+
+        $resourceProject = new RessourceProjets();
+        $resourceProject->quantite = $validatedData['quantite'];
+        $resourceProject->prix = $validatedData['prix'];
+        $resourceProject->ressource = $validatedData['ressource'];
+        $resourceProject->projet = $validatedData['projet'];
+        $resourceProject->save();
+
+        return response()->json(['message' => 'Resource project added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateResourceProject(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'quantite' => 'required|numeric|min:0',
+            'prix' => 'required|numeric|min:0',
+            'ressource' => 'required|string|max:255',
+            'projet' => 'required|string|max:255',
+        ]);
+
+        $resourceProject = RessourceProjets::findOrFail($id);
+        $resourceProject->quantite = $validatedData['quantite'];
+        $resourceProject->prix = $validatedData['prix'];
+        $resourceProject->ressource = $validatedData['ressource'];
+        $resourceProject->projet = $validatedData['projet'];
+        $resourceProject->save();
+
+        return response()->json(['message' => 'Resource project updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteResourceProject($id)
     {
-        //
+        $resourceProject = RessourceProjets::findOrFail($id);
+        $resourceProject->delete();
+
+        return response()->json(['message' => 'Resource project deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(RessourceProjets $ressourceProjets)
+    public function getResourceProjectDetails($id)
     {
-        //
-    }
+        $resourceProject = RessourceProjets::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(RessourceProjets $ressourceProjets)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, RessourceProjets $ressourceProjets)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(RessourceProjets $ressourceProjets)
-    {
-        //
+        return response()->json(['resourceProject' => $resourceProject]);
     }
 }

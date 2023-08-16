@@ -7,59 +7,44 @@ use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addCategorie(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255|unique:categories',
+        ]);
+
+        $categorie = new Categories();
+        $categorie->nom = $validatedData['nom'];
+        $categorie->save();
+
+        return response()->json(['message' => 'Categorie added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateCategorie(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255|unique:categories,nom,' . $id,
+        ]);
+
+        $categorie = Categories::findOrFail($id);
+        $categorie->nom = $validatedData['nom'];
+        $categorie->save();
+
+        return response()->json(['message' => 'Categorie updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteCategorie($id)
     {
-        //
+        $categorie = Categories::findOrFail($id);
+        $categorie->delete();
+
+        return response()->json(['message' => 'Categorie deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Categories $categories)
+    public function getCategorieDetails($id)
     {
-        //
-    }
+        $categorie = Categories::findOrFail($id); 
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Categories $categories)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Categories $categories)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Categories $categories)
-    {
-        //
+        return response()->json(['categorie' => $categorie]);
     }
 }

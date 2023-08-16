@@ -7,59 +7,67 @@ use Illuminate\Http\Request;
 
 class FournisseursController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addFournisseur(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email',
+            'telephone' => 'required|string|max:20',
+            'societe' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+        ]);
+
+        $fournisseur = new Fournisseurs();
+        $fournisseur->nom = $validatedData['nom'];
+        $fournisseur->email = $validatedData['email'];
+        $fournisseur->telephone = $validatedData['telephone'];
+        $fournisseur->societe = $validatedData['societe'];
+        $fournisseur->adresse = $validatedData['adresse'];
+        $fournisseur->save();
+
+        return response()->json(['message' => 'Fournisseur added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateFournisseur(Request $request, $nom)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email' . $nom,
+            'telephone' => 'required|string|max:20',
+            'societe' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+        ]);
+
+        $fournisseur = Fournisseurs::where('nom', $nom)->first();
+        if (!$fournisseur) {
+            return response()->json(['error' => 'Fournisseur not found'], 404);
+        }
+
+        $fournisseur->fill($validatedData);
+        $fournisseur->save();
+
+        return response()->json(['message' => 'Fournisseur updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteFournisseur($nom)
     {
-        //
+        $fournisseur = Fournisseurs::where('nom', $nom)->first();
+        if (!$fournisseur) {
+            return response()->json(['error' => 'Fournisseur not found'], 404);
+        }
+
+        $fournisseur->delete();
+
+        return response()->json(['message' => 'Fournisseur deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Fournisseurs $fournisseurs)
+    public function getFournisseurDetails($nom)
     {
-        //
-    }
+        $fournisseur = Fournisseurs::where('nom', $nom)->first();
+        if (!$fournisseur) {
+            return response()->json(['error' => 'Fournisseur not found'], 404);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Fournisseurs $fournisseurs)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Fournisseurs $fournisseurs)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Fournisseurs $fournisseurs)
-    {
-        //
+        return response()->json(['fournisseur' => $fournisseur]);
     }
 }

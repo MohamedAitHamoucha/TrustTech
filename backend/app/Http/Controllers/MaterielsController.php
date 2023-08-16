@@ -7,59 +7,64 @@ use Illuminate\Http\Request;
 
 class MaterielsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addMaterial(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'reference' => 'required|string|max:255|unique:materials',
+            'quantite' => 'required|numeric|min:0',
+            'prix_achat' => 'required|numeric|min:0',
+            'categorie' => 'required|string|max:255',
+            'ressource' => 'required|string|max:255',
+        ]);
+
+        $material = new Materiels();
+        $material->nom = $validatedData['nom'];
+        $material->reference = $validatedData['reference'];
+        $material->quantite = $validatedData['quantite'];
+        $material->prix_achat = $validatedData['prix_achat'];
+        $material->categorie = $validatedData['categorie'];
+        $material->ressource = $validatedData['ressource'];
+        $material->save();
+
+        return response()->json(['message' => 'Material added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateMaterial(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'reference' => 'required|string|max:255|unique:materials,reference,' . $id,
+            'quantite' => 'required|numeric|min:0',
+            'prix_achat' => 'required|numeric|min:0',
+            'categorie' => 'required|string|max:255',
+            'ressource' => 'required|string|max:255',
+        ]);
+
+        $material = Materiels::findOrFail($id);
+        $material->nom = $validatedData['nom'];
+        $material->reference = $validatedData['reference'];
+        $material->quantite = $validatedData['quantite'];
+        $material->prix_achat = $validatedData['prix_achat'];
+        $material->categorie = $validatedData['categorie'];
+        $material->ressource = $validatedData['ressource'];
+        $material->save();
+
+        return response()->json(['message' => 'Material updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteMaterial($id)
     {
-        //
+        $material = Materiels::findOrFail($id);
+        $material->delete();
+
+        return response()->json(['message' => 'Material deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Materiels $materiels)
+    public function getMaterialDetails($id)
     {
-        //
-    }
+        $material = Materiels::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Materiels $materiels)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Materiels $materiels)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Materiels $materiels)
-    {
-        //
+        return response()->json(['material' => $material]);
     }
 }

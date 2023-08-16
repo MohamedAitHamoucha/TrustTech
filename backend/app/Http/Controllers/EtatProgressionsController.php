@@ -7,59 +7,48 @@ use Illuminate\Http\Request;
 
 class EtatProgressionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addEtatProgression(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'ordre' => 'required|integer',
+        ]);
+
+        $etatProgression = new EtatProgressions();
+        $etatProgression->libelle = $validatedData['libelle'];
+        $etatProgression->ordre = $validatedData['ordre'];
+        $etatProgression->save();
+
+        return response()->json(['message' => 'Etat de progression added successfully'], 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateEtatProgression(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'libelle' => 'required|string|max:255',
+            'ordre' => 'required|integer',
+        ]);
+
+        $etatProgression = EtatProgressions::findOrFail($id);
+        $etatProgression->libelle = $validatedData['libelle'];
+        $etatProgression->ordre = $validatedData['ordre'];
+        $etatProgression->save();
+
+        return response()->json(['message' => 'Etat de progression updated successfully']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteEtatProgression($id)
     {
-        //
+        $etatProgression = EtatProgressions::findOrFail($id);
+        $etatProgression->delete();
+
+        return response()->json(['message' => 'Etat de progression deleted successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(EtatProgressions $etatProgressions)
+    public function getEtatProgressionDetails($id)
     {
-        //
-    }
+        $etatProgression = EtatProgressions::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(EtatProgressions $etatProgressions)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, EtatProgressions $etatProgressions)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(EtatProgressions $etatProgressions)
-    {
-        //
+        return response()->json(['etatProgression' => $etatProgression]);
     }
 }
