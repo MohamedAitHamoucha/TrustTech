@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home.dart';
+import 'constants.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String _message = '';
 
   String _getServerURL() {
-    return 'https://b809-105-158-110-218.ngrok-free.app';
+    return Constants.baseServerUrl;
   }
 
   Future<void> _login() async {

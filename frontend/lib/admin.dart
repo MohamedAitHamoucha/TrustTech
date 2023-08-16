@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'constants.dart';
 
 void main() {
   runApp(MyAdminApp());
@@ -26,6 +27,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _selectedUserRole = 'Admin'; // Default value
+  
+  String _getServerURL() {
+    return Constants.baseServerUrl;
+  }
 
   Future<void> _register() async {
     String username = _usernameController.text.trim();
@@ -69,11 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         SnackBar(content: Text('An error occurred')),
       );
     }
-  }
-
-  String _getServerURL() {
-    return 'https://b809-105-158-110-218.ngrok-free.app';
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
