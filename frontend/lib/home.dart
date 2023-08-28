@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'admin.dart';
+import 'Fournisseurs/Gérer_les_Fournisseurs.dart';
+import 'Clients/Gerer_les_Clients.dart';
 
 class MyHomeApp extends StatelessWidget {
   final String username;
@@ -112,9 +114,11 @@ class MyHomeApp extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildButtonWithImageAndText('assets/collaboration 1.png',
-                      'Gérer les\nCollaborateurs'),
+                      'Gérer les\nCollaborateurs', context),
                   _buildButtonWithImageAndText(
-                      'assets/project-management 1.png', 'Gérer les\nProjets'),
+                      'assets/project-management 1.png',
+                      'Gérer les\nProjets',
+                      context),
                 ],
               ),
               SizedBox(height: 10),
@@ -122,9 +126,9 @@ class MyHomeApp extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildButtonWithImageAndText(
-                      'assets/customer 1.png', 'Gérer les\nClients'),
-                  _buildButtonWithImageAndText(
-                      'assets/delivery-box 1.png', 'Gérer les\nFournisseurs'),
+                      'assets/customer 1.png', 'Gérer les\nClients', context),
+                  _buildButtonWithImageAndText('assets/delivery-box 1.png',
+                      'Gérer les\nFournisseurs', context),
                 ],
               ),
               SizedBox(height: 10),
@@ -132,9 +136,9 @@ class MyHomeApp extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildButtonWithImageAndText(
-                      'assets/equipment 1.png', 'Gérer le\nMateriel'),
+                      'assets/equipment 1.png', 'Gérer le\nMateriel', context),
                   _buildButtonWithImageAndText(
-                      'assets/bill 1.png', 'Gerer les\nFacteures'),
+                      'assets/bill 1.png', 'Gerer les\nFacteures', context),
                 ],
               ),
             ],
@@ -144,7 +148,8 @@ class MyHomeApp extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonWithImageAndText(String imagePath, String buttonText) {
+  Widget _buildButtonWithImageAndText(
+      String imagePath, String buttonText, BuildContext context) {
     return Container(
       width: 180,
       height: 180,
@@ -160,7 +165,24 @@ class MyHomeApp extends StatelessWidget {
           onPrimary: Colors.black,
         ),
         onPressed: () {
-          print('Button pressed: $buttonText');
+          if (buttonText == 'Gérer les\nFournisseurs') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyFournisseurApp(),
+              ),
+            );
+          }else if (buttonText == 'Gérer les\nClients'){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyClientApp(),
+              ),
+            );
+          }
+           else {
+            print('Button pressed: $buttonText');
+          }
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
