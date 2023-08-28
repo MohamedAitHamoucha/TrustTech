@@ -28,30 +28,35 @@ class FournisseursController extends Controller
         return response()->json(['message' => 'Fournisseur added successfully'], 201);
     }
 
-    public function updateFournisseur(Request $request, $nom)
+    public function updateFournisseur(Request $request)
     {
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
-            'email' => 'required|email' . $nom,
+            'email' => 'required|email',
             'telephone' => 'required|string|max:20',
             'societe' => 'required|string|max:255',
             'adresse' => 'required|string|max:255',
         ]);
 
-        $fournisseur = Fournisseurs::where('nom', $nom)->first();
+        $fournisseur = Fournisseurs::where('nom', $validatedData['nom'])->first();
         if (!$fournisseur) {
             return response()->json(['error' => 'Fournisseur not found'], 404);
         }
 
-        $fournisseur->fill($validatedData);
-        $fournisseur->save();
+        $fournisseur->update($validatedData);
 
         return response()->json(['message' => 'Fournisseur updated successfully']);
     }
 
-    public function deleteFournisseur($nom)
+
+
+    public function deleteFournisseur(Request $request)
     {
-        $fournisseur = Fournisseurs::where('nom', $nom)->first();
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
+
+        $fournisseur = Fournisseurs::where('nom', $validatedData['nom'])->first();
         if (!$fournisseur) {
             return response()->json(['error' => 'Fournisseur not found'], 404);
         }
@@ -61,13 +66,24 @@ class FournisseursController extends Controller
         return response()->json(['message' => 'Fournisseur deleted successfully']);
     }
 
-    public function getFournisseurDetails($nom)
+
+    public function getFournisseurDetails(Request $request)
     {
-        $fournisseur = Fournisseurs::where('nom', $nom)->first();
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
+
+        $fournisseur = Fournisseurs::where('nom', $validatedData['nom'])->first();
         if (!$fournisseur) {
             return response()->json(['error' => 'Fournisseur not found'], 404);
         }
 
         return response()->json(['fournisseur' => $fournisseur]);
+    }
+
+    public function getAllFournisseurs()
+    {
+        $fournisseurs = Fournisseurs::all();
+        return response()->json(['fournisseurs' => $fournisseurs]);
     }
 }
