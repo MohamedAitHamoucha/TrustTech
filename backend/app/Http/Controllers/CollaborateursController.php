@@ -11,56 +11,63 @@ class CollaborateursController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:Collaborateurss',
+            'email' => 'required|email|unique:collaborateurs',
             'telephone' => 'required|string|max:20',
             'titre' => 'required|string|max:255',
             'resource' => 'required|string|max:255',
         ]);
 
-        $Collaborateurs = new Collaborateurs();
-        $Collaborateurs->nom = $validatedData['nom'];
-        $Collaborateurs->email = $validatedData['email'];
-        $Collaborateurs->telephone = $validatedData['telephone'];
-        $Collaborateurs->titre = $validatedData['titre'];
-        $Collaborateurs->resource = $validatedData['resource'];
-        $Collaborateurs->save();
+        $collaborateur = new Collaborateurs();
+        $collaborateur->nom = $validatedData['nom'];
+        $collaborateur->email = $validatedData['email'];
+        $collaborateur->telephone = $validatedData['telephone'];
+        $collaborateur->titre = $validatedData['titre'];
+        $collaborateur->ressource = $validatedData['resource'];
+        $collaborateur->save();
 
-        return response()->json(['message' => 'Collaborateurs added successfully'], 201);
+        return response()->json(['message' => 'Collaborateur added successfully'], 201);
     }
 
-    public function updateCollaborateurs(Request $request, $id)
+    public function updateCollaborateurs(Request $request)
     {
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:Collaborateurss,email,' . $id,
+            'email' => 'required|email|unique:collaborateurs,email,' . $request->id,
             'telephone' => 'required|string|max:20',
             'titre' => 'required|string|max:255',
-            'resource' => 'required|string|max:255',
+            'ressource' => 'required|string|max:255',
         ]);
 
-        $Collaborateurs = Collaborateurs::findOrFail($id);
-        $Collaborateurs->nom = $validatedData['nom'];
-        $Collaborateurs->email = $validatedData['email'];
-        $Collaborateurs->telephone = $validatedData['telephone'];
-        $Collaborateurs->titre = $validatedData['titre'];
-        $Collaborateurs->resource = $validatedData['resource'];
-        $Collaborateurs->save();
+        $collaborateur = Collaborateurs::findOrFail($request->id);
+        $collaborateur->nom = $validatedData['nom'];
+        $collaborateur->email = $validatedData['email'];
+        $collaborateur->telephone = $validatedData['telephone'];
+        $collaborateur->titre = $validatedData['titre'];
+        $collaborateur->resource = $validatedData['ressource'];
+        $collaborateur->save();
 
-        return response()->json(['message' => 'Collaborateurs updated successfully']);
+        return response()->json(['message' => 'Collaborateur updated successfully']);
     }
 
-    public function deleteCollaborateurs($id)
+    public function deleteCollaborateurs(Request $request)
     {
-        $Collaborateurs = Collaborateurs::findOrFail($id);
-        $Collaborateurs->delete();
+        $collaborateur = Collaborateurs::findOrFail($request->id);
+        $collaborateur->delete();
 
-        return response()->json(['message' => 'Collaborateurs deleted successfully']);
+        return response()->json(['message' => 'Collaborateur deleted successfully']);
     }
 
-    public function getCollaborateursDetails($id)
+    public function getCollaborateursDetails(Request $request)
     {
-        $Collaborateurs = Collaborateurs::findOrFail($id);
+        $collaborateur = Collaborateurs::findOrFail($request->id);
 
-        return response()->json(['Collaborateurs' => $Collaborateurs]);
+        return response()->json(['collaborateur' => $collaborateur]);
+    }
+    
+    public function getAllCollaborateurs(Request $request)
+    {
+        $collaborateurs = Collaborateurs::all();
+
+        return response()->json(['collaborateurs' => $collaborateurs]);
     }
 }

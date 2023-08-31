@@ -18,14 +18,14 @@ return new class extends Migration
             $table->date('date_debut');
             $table->date('date_fin_estimee');
             $table->date('date_fin');
-            $table->unsignedBigInteger('etat_progression');
-            $table->unsignedBigInteger('type_projet');
+            $table->unsignedBigInteger('etatprogression');
+            $table->unsignedBigInteger('typeprojet');
             $table->unsignedBigInteger('client');
             $table->unsignedBigInteger('chef_projet');
             $table->timestamps();
 
-            $table->foreign('etat_progression')->references('id')->on('EtatProgression');
-            $table->foreign('type_projet')->references('id')->on('TypeProjets');
+            $table->foreign('etatprogression')->references('id')->on('etatprogression');
+            $table->foreign('typeprojet')->references('id')->on('typeprojet');
             $table->foreign('client')->references('id')->on('Clients');
             $table->foreign('chef_projet')->references('id')->on('Users');
         });

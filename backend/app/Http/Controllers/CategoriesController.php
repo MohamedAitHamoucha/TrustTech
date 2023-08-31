@@ -20,31 +20,38 @@ class CategoriesController extends Controller
         return response()->json(['message' => 'Categorie added successfully'], 201);
     }
 
-    public function updateCategorie(Request $request, $id)
+    public function updateCategorie(Request $request)
     {
         $validatedData = $request->validate([
-            'nom' => 'required|string|max:255|unique:categories,nom,' . $id,
+            'nom' => 'required|string|max:255|unique:categories,nom,' . $request->id,
         ]);
 
-        $categorie = Categories::findOrFail($id);
-        $categorie->nom = $validatedData['nom'];
-        $categorie->save();
+        $category = Categories::findOrFail($request->id);
+        $category->nom = $validatedData['nom'];
+        $category->save();
 
         return response()->json(['message' => 'Categorie updated successfully']);
     }
 
-    public function deleteCategorie($id)
+    public function deleteCategorie(Request $request)
     {
-        $categorie = Categories::findOrFail($id);
-        $categorie->delete();
+        $category = Categories::findOrFail($request->id);
+        $category->delete();
 
         return response()->json(['message' => 'Categorie deleted successfully']);
     }
 
-    public function getCategorieDetails($id)
+    public function getCategorieDetails(Request $request)
     {
-        $categorie = Categories::findOrFail($id); 
+        $category = Categories::findOrFail($request->id);
 
-        return response()->json(['categorie' => $categorie]);
+        return response()->json(['category' => $category]);
+    }
+
+    public function getAllCategories(Request $request)
+    {
+        $categories = Categories::all();
+
+        return response()->json(['categories' => $categories]);
     }
 }

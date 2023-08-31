@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TypeProjets extends Model
+class TypeProjet extends Model
 {
     use HasFactory;
+    protected $table = 'TypeProjet';
     protected $fillable = [
         'id','type'
     ];

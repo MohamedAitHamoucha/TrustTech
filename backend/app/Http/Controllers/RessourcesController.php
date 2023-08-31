@@ -24,7 +24,7 @@ class RessourcesController extends Controller
         return response()->json(['message' => 'Resource added successfully'], 201);
     }
 
-    public function updateResource(Request $request, $id)
+    public function updateResource(Request $request)
     {
         $validatedData = $request->validate([
             'type' => 'required|string|max:255',
@@ -32,7 +32,7 @@ class RessourcesController extends Controller
             'fournisseur' => 'required|string|max:255',
         ]);
 
-        $resource = Ressources::findOrFail($id);
+        $resource = Ressources::findOrFail($request->id);
         $resource->type = $validatedData['type'];
         $resource->unite = $validatedData['unite'];
         $resource->fournisseur = $validatedData['fournisseur'];
@@ -41,18 +41,24 @@ class RessourcesController extends Controller
         return response()->json(['message' => 'Resource updated successfully']);
     }
 
-    public function deleteResource($id)
+    public function deleteResource(Request $request)
     {
-        $resource = Ressources::findOrFail($id);
+        $resource = Ressources::findOrFail($request->id);
         $resource->delete();
 
         return response()->json(['message' => 'Resource deleted successfully']);
     }
 
-    public function getResourceDetails($id)
+    public function getResourceDetails(Request $request)
     {
-        $resource = Ressources::findOrFail($id);
+        $resource = Ressources::findOrFail($request->id);
 
         return response()->json(['resource' => $resource]);
+    }
+    public function getAllResources(Request $request)
+    {
+        $resources = Ressources::all();
+
+        return response()->json(['resources' => $resources]);
     }
 }

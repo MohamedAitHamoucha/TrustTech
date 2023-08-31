@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EtatProgressions;
+use App\Models\EtatProgression;
 use Illuminate\Http\Request;
 
-class EtatProgressionsController extends Controller
+class EtatProgressionController extends Controller
 {
     public function addEtatProgression(Request $request)
     {
@@ -14,7 +14,7 @@ class EtatProgressionsController extends Controller
             'ordre' => 'required|integer',
         ]);
 
-        $etatProgression = new EtatProgressions();
+        $etatProgression = new EtatProgression();
         $etatProgression->libelle = $validatedData['libelle'];
         $etatProgression->ordre = $validatedData['ordre'];
         $etatProgression->save();
@@ -29,7 +29,7 @@ class EtatProgressionsController extends Controller
             'ordre' => 'required|integer',
         ]);
 
-        $etatProgression = EtatProgressions::findOrFail($id);
+        $etatProgression = EtatProgression::findOrFail($id);
         $etatProgression->libelle = $validatedData['libelle'];
         $etatProgression->ordre = $validatedData['ordre'];
         $etatProgression->save();
@@ -39,7 +39,7 @@ class EtatProgressionsController extends Controller
 
     public function deleteEtatProgression($id)
     {
-        $etatProgression = EtatProgressions::findOrFail($id);
+        $etatProgression = EtatProgression::findOrFail($id);
         $etatProgression->delete();
 
         return response()->json(['message' => 'Etat de progression deleted successfully']);
@@ -47,8 +47,14 @@ class EtatProgressionsController extends Controller
 
     public function getEtatProgressionDetails($id)
     {
-        $etatProgression = EtatProgressions::findOrFail($id);
+        $etatProgression = EtatProgression::findOrFail($id);
 
         return response()->json(['etatProgression' => $etatProgression]);
+    }
+    public function getAllEtatProgression(Request $request)
+    {
+        $etatProgressions = EtatProgression::all();
+
+        return response()->json(['etatProgressions' => $etatProgressions]);
     }
 }
