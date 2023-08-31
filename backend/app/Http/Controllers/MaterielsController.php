@@ -30,31 +30,31 @@ class MaterielsController extends Controller
         return response()->json(['message' => 'Material added successfully'], 201);
     }
 
+
     public function updateMateriel(Request $request)
     {
-        // Validate the request data except for 'id'
+        // Validate the request data except for 'nom'
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
             'nom' => 'required|string|max:255',
-            'reference' => 'required|string|max:255|unique:materiels,reference,' . $request->input('id'),
+            'reference' => 'required|string|max:255|unique:materiels,reference,' . $request->input('nom'),
             'quantite' => 'required|numeric|min:0',
             'prix_achat' => 'required|numeric|min:0',
             'categorie' => 'required|numeric',
             'ressource' => 'required|numeric',
         ]);
 
-        // Get the 'id' from the request query
-        $id = $validatedData['id'];
+        // Get the 'nom' from the request query
+        $nom = $validatedData['nom'];
 
-        // Find the material by 'id'
-        $material = Materiels::find($id);
+        // Find the material by 'nom'
+        $material = Materiels::where('nom', $nom)->first();
 
         if (!$material) {
             return response()->json(['error' => 'Material not found'], 404);
         }
 
         // Update the material attributes
-        $material->nom = $validatedData['nom'];
+        $material->nom = $nom;
         $material->reference = $validatedData['reference'];
         $material->quantite = $validatedData['quantite'];
         $material->prix_achat = $validatedData['prix_achat'];
@@ -70,10 +70,13 @@ class MaterielsController extends Controller
     public function deleteMateriel(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
+            'nom' => 'required|string|max:255',
         ]);
 
-        $material = Materiels::find($validatedData['id']);
+        // Get the 'nom' from the request query
+        $nom = $validatedData['nom'];
+
+        $material = Materiels::where('nom', $nom)->first();
 
         if (!$material) {
             return response()->json(['error' => 'Material not found'], 404);
@@ -84,21 +87,52 @@ class MaterielsController extends Controller
         return response()->json(['message' => 'Material deleted successfully']);
     }
 
-
     public function getMaterielDetails(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
+            'nom' => 'required|string|max:255',
         ]);
 
-        $materiel = Materiels::findOrFail($validatedData['id']);
+        // Get the 'nom' from the request query
+        $nom = $validatedData['nom'];
+
+        $materiel = Materiels::where('nom', $nom)->first();
+
+        if (!$materiel) {
+            return response()->json(['error' => 'Material not found'], 404);
+        }
 
         return response()->json(['materiel' => $materiel]);
     }
+
     public function getAllMaterials(Request $request)
     {
-        $materials = Materiels::all();
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
 
-        return response()->json(['materials' => $materials]);
+        // Get the 'nom' from the request query
+        $nom = $validatedData['nom'];
+
+        $materials = Materiels::where('nom', $nom)->get();
+
+        if ($materials->isEmpty()) {
+            return response()->json(['message' => 'No materials found'], 404);
+        }
+
+        $materialDetails = [];
+
+        foreach ($materials as $material) {
+            $materialDetails[] = [
+                'nom' => $material->nom,
+                'reference' => $material->reference,
+                'quantite' => $material->quantite,
+                'prix_achat' => $material->prix_achat,
+                'categorie' => $material->categorie,
+                'ressource' => $material->ressource,
+            ];
+        }
+
+        return response()->json(['materialDetails' => $materialDetails]);
     }
 }

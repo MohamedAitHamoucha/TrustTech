@@ -26,25 +26,24 @@ class TachesController extends Controller
 
     public function updateTache(Request $request)
     {
-        // Validate the request data except for 'id'
+        // Validate the request data except for 'nom'
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
             'collaborateur' => 'required|numeric',
             'projet' => 'required|string|numeric',
         ]);
 
-        // Get the 'id' from the request query
-        $id = $request->query('id');
+        // Get the 'nom' from the request query
+        $nom = $request->query('nom');
 
-        // Find the tache by 'id'
-        $tache = Taches::find($id);
+        // Find the tache by 'nom'
+        $tache = Taches::where('nom', $nom)->first();
 
         if (!$tache) {
             return response()->json(['error' => 'Tache not found'], 404);
         }
 
         // Update the tache attributes
-        $tache->nom = $validatedData['nom'];
         $tache->collaborateur = $validatedData['collaborateur'];
         $tache->projet = $validatedData['projet'];
 
@@ -57,10 +56,16 @@ class TachesController extends Controller
     public function deleteTache(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
+            'nom' => 'required|string|max:255', // Change 'id' to 'nom'
         ]);
 
-        $tache = Taches::findOrFail($validatedData['id']);
+        // Find the tache by 'nom'
+        $tache = Taches::where('nom', $validatedData['nom'])->first();
+
+        if (!$tache) {
+            return response()->json(['error' => 'Tache not found'], 404);
+        }
+
         $tache->delete();
 
         return response()->json(['message' => 'Tache deleted successfully']);
@@ -69,17 +74,22 @@ class TachesController extends Controller
     public function getTacheDetails(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
+            'nom' => 'required|string|max:255', // Change 'id' to 'nom'
         ]);
 
-        $tache = Taches::findOrFail($validatedData['id']);
+        // Find the tache by 'nom'
+        $tache = Taches::where('nom', $validatedData['nom'])->first();
+
+        if (!$tache) {
+            return response()->json(['error' => 'Tache not found'], 404);
+        }
 
         return response()->json(['tache' => $tache]);
     }
+
     public function getAllTaches(Request $request)
     {
         $taches = Taches::all();
-
         return response()->json(['taches' => $taches]);
     }
 }

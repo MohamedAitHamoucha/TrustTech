@@ -32,13 +32,18 @@ class CollaborateursController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:collaborateurs,email,' . $request->id,
+            'email' => 'required|email|unique:collaborateurs,email,' . $request->input('nom'),
             'telephone' => 'required|string|max:20',
             'titre' => 'required|string|max:255',
             'ressource' => 'required|string|max:255',
         ]);
 
-        $collaborateur = Collaborateurs::findOrFail($request->id);
+        $collaborateur = Collaborateurs::where('nom', $request->input('nom'))->first();
+
+        if (!$collaborateur) {
+            return response()->json(['error' => 'Collaborateur not found'], 404);
+        }
+
         $collaborateur->nom = $validatedData['nom'];
         $collaborateur->email = $validatedData['email'];
         $collaborateur->telephone = $validatedData['telephone'];
@@ -51,7 +56,16 @@ class CollaborateursController extends Controller
 
     public function deleteCollaborateurs(Request $request)
     {
-        $collaborateur = Collaborateurs::findOrFail($request->id);
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
+
+        $collaborateur = Collaborateurs::where('nom', $request->input('nom'))->first();
+
+        if (!$collaborateur) {
+            return response()->json(['error' => 'Collaborateur not found'], 404);
+        }
+
         $collaborateur->delete();
 
         return response()->json(['message' => 'Collaborateur deleted successfully']);
@@ -59,11 +73,19 @@ class CollaborateursController extends Controller
 
     public function getCollaborateursDetails(Request $request)
     {
-        $collaborateur = Collaborateurs::findOrFail($request->id);
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
+
+        $collaborateur = Collaborateurs::where('nom', $request->input('nom'))->first();
+
+        if (!$collaborateur) {
+            return response()->json(['error' => 'Collaborateur not found'], 404);
+        }
 
         return response()->json(['collaborateur' => $collaborateur]);
     }
-    
+
     public function getAllCollaborateurs(Request $request)
     {
         $collaborateurs = Collaborateurs::all();

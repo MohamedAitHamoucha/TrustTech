@@ -23,11 +23,16 @@ class TypeProjetController extends Controller
     public function updateTypeProject(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|exists:type_projets',
-            'type' => 'required|string|max:255',
+            'type' => 'required|string|max:255', // Change 'id' to 'type'
         ]);
 
-        $typeProject = TypeProjet::findOrFail($validatedData['id']);
+        $typeProject = TypeProjet::where('type', $validatedData['type'])->first();
+
+        if (!$typeProject) {
+            return response()->json(['error' => 'Type project not found'], 404);
+        }
+
+        // Update the type project attributes
         $typeProject->type = $validatedData['type'];
         $typeProject->save();
 
@@ -37,10 +42,15 @@ class TypeProjetController extends Controller
     public function deleteTypeProject(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|exists:type_projets',
+            'type' => 'required|string|max:255', // Change 'id' to 'type'
         ]);
 
-        $typeProject = TypeProjet::findOrFail($validatedData['id']);
+        $typeProject = TypeProjet::where('type', $validatedData['type'])->first();
+
+        if (!$typeProject) {
+            return response()->json(['error' => 'Type project not found'], 404);
+        }
+
         $typeProject->delete();
 
         return response()->json(['message' => 'Type project deleted successfully']);
@@ -49,10 +59,14 @@ class TypeProjetController extends Controller
     public function getTypeProjectDetails(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|exists:type_projets',
+            'type' => 'required|string|max:255', // Change 'id' to 'type'
         ]);
 
-        $typeProject = TypeProjet::findOrFail($validatedData['id']);
+        $typeProject = TypeProjet::where('type', $validatedData['type'])->first();
+
+        if (!$typeProject) {
+            return response()->json(['error' => 'Type project not found'], 404);
+        }
 
         return response()->json(['typeProject' => $typeProject]);
     }
@@ -63,5 +77,4 @@ class TypeProjetController extends Controller
 
         return response()->json(['typeProjects' => $typeProjects]);
     }
-    
 }

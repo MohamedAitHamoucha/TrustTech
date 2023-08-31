@@ -28,7 +28,7 @@ class RessourceProjetsController extends Controller
 
     public function updateResourceProject(Request $request)
     {
-        // Validate the request data except for 'id'
+        // Validate the request data except for 'resource'
         $validatedData = $request->validate([
             'quantite' => 'required|numeric|min:0',
             'prix' => 'required|numeric|min:0',
@@ -36,11 +36,11 @@ class RessourceProjetsController extends Controller
             'projet' => 'required|numeric',
         ]);
 
-        // Get the 'id' from the request query
-        $id = $request->query('id');
+        // Get the 'resource' from the request query
+        $resource = $request->query('resource');
 
-        // Find the resource project by 'id'
-        $resourceProject = RessourceProjets::find($id);
+        // Find the resource project by 'resource'
+        $resourceProject = RessourceProjets::where('ressource', $resource)->first();
 
         if (!$resourceProject) {
             return response()->json(['error' => 'Resource project not found'], 404);
@@ -61,10 +61,15 @@ class RessourceProjetsController extends Controller
     public function deleteResourceProject(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
+            'resource' => 'required|numeric',
         ]);
 
-        $resourceProject = RessourceProjets::findOrFail($validatedData['id']);
+        $resourceProject = RessourceProjets::where('ressource', $validatedData['resource'])->first();
+
+        if (!$resourceProject) {
+            return response()->json(['error' => 'Resource project not found'], 404);
+        }
+
         $resourceProject->delete();
 
         return response()->json(['message' => 'Resource project deleted successfully']);
@@ -73,14 +78,18 @@ class RessourceProjetsController extends Controller
     public function getResourceProjectDetails(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|numeric',
+            'resource' => 'required|numeric',
         ]);
 
-        $resourceProject = RessourceProjets::findOrFail($validatedData['id']);
+        $resourceProject = RessourceProjets::where('ressource', $validatedData['resource'])->first();
+
+        if (!$resourceProject) {
+            return response()->json(['error' => 'Resource project not found'], 404);
+        }
 
         return response()->json(['resourceProject' => $resourceProject]);
     }
-    
+
     public function getAllResourceProjects(Request $request)
     {
         $resourceProjects = RessourceProjets::all();

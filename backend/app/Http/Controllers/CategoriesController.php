@@ -23,27 +23,49 @@ class CategoriesController extends Controller
     public function updateCategorie(Request $request)
     {
         $validatedData = $request->validate([
-            'nom' => 'required|string|max:255|unique:categories,nom,' . $request->id,
+            'nom' => 'required|string|max:255|unique:categories,nom,' . $request->input('nom'),
         ]);
 
-        $category = Categories::findOrFail($request->id);
+        $category = Categories::where('nom', $request->input('nom'))->first();
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
         $category->nom = $validatedData['nom'];
         $category->save();
 
-        return response()->json(['message' => 'Categorie updated successfully']);
+        return response()->json(['message' => 'Category updated successfully']);
     }
 
     public function deleteCategorie(Request $request)
     {
-        $category = Categories::findOrFail($request->id);
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
+
+        $category = Categories::where('nom', $request->input('nom'))->first();
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
         $category->delete();
 
-        return response()->json(['message' => 'Categorie deleted successfully']);
+        return response()->json(['message' => 'Category deleted successfully']);
     }
 
     public function getCategorieDetails(Request $request)
     {
-        $category = Categories::findOrFail($request->id);
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+        ]);
+
+        $category = Categories::where('nom', $request->input('nom'))->first();
+
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
 
         return response()->json(['category' => $category]);
     }
