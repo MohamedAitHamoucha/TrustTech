@@ -65,7 +65,30 @@ class _MyFournisseurAppState extends State<MyFournisseurApp> {
       key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
+        leading: IconButton(
+          icon: Image.asset(
+            'assets/delivery-box 1.png',
+            width: 30,
+            height: 30,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // Handle the onPressed event if needed
+          },
+        ),
         title: Text('Gérer les Fournisseurs'),
+        actions: [
+          IconButton(
+            icon: Image.asset(
+              'assets/backarr.png',
+              width: 30,
+              height: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

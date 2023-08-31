@@ -53,8 +53,8 @@ class _MyClientAppState extends State<MyClientApp> {
       return;
     }
 
-    final response = await http
-        .get(Uri.parse('$serverURL/api/getClientDetails?nom=$query'));
+    final response =
+        await http.get(Uri.parse('$serverURL/api/getClientDetails?nom=$query'));
     if (response.statusCode == 200) {
       setState(() {
         clients = [json.decode(response.body)['Client']];
@@ -70,7 +70,30 @@ class _MyClientAppState extends State<MyClientApp> {
       key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
+        leading: IconButton(
+          icon: Image.asset(
+            'assets/customer 1.png',
+            width: 30,
+            height: 30,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            // Handle the onPressed event if needed
+          },
+        ),
         title: Text('Gérer les Clients'),
+        actions: [
+          IconButton(
+            icon: Image.asset(
+              'assets/backarr.png',
+              width: 30,
+              height: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

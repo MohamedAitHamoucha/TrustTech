@@ -59,13 +59,13 @@ class MyHomeApp extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Container(
                       color: Color.fromRGBO(255, 0, 230, 1),
-                      height: 150.0,
+                      height: 100.0,
                       child: Column(
                         children: [
                           Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                              padding: EdgeInsets.only(top: 65, left: 20),
+                              padding: EdgeInsets.only(top: 30, left: 20),
                               child: Text(
                                 username,
                                 style: TextStyle(
@@ -94,19 +94,10 @@ class MyHomeApp extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    top: 55.0,
+                    top: 15.0,
                     left: 310.0,
                     child: Image.asset('assets/user 1.png'),
                   ),
-                  Positioned(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 127),
-                        child: Image.asset('assets/bubble.png'),
-                      ),
-                    ),
-                  )
                 ],
               ),
               SizedBox(height: 20),
@@ -135,10 +126,40 @@ class MyHomeApp extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  _buildButtonWithImageAndText('assets/equipment 1.png',
+                      'Gérer les\nMateriels', context),
                   _buildButtonWithImageAndText(
-                      'assets/equipment 1.png', 'Gérer le\nMateriel', context),
+                      'assets/bill 1.png', 'Gérer les\nFacteures', context),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildButtonWithImageAndText('assets/categories.png',
+                      'Gérer les\nCategories', context),
+                  _buildButtonWithImageAndText('assets/ressources.png',
+                      'Gérer les\nRessources', context),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   _buildButtonWithImageAndText(
-                      'assets/bill 1.png', 'Gerer les\nFacteures', context),
+                      'assets/taches.png', 'Gérer les\nTâches', context),
+                  _buildButtonWithImageAndText('assets/ressourceprojet.png',
+                      'Gérer les\nRessources de Projet', context),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildButtonWithImageAndText('assets/typeprojet.png',
+                      'Gérer les\nTypes de Projet', context),
+                  _buildButtonWithImageAndText('assets/etat.png',
+                      "Gérer l'Etat\nde Progression", context),
                 ],
               ),
             ],
@@ -172,15 +193,14 @@ class MyHomeApp extends StatelessWidget {
                 builder: (context) => MyFournisseurApp(),
               ),
             );
-          }else if (buttonText == 'Gérer les\nClients'){
+          } else if (buttonText == 'Gérer les\nClients') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyClientApp(),
               ),
             );
-          }
-           else {
+          } else {
             print('Button pressed: $buttonText');
           }
         },

@@ -47,7 +47,7 @@ class _DetailsPageState extends State<DetailsPage> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/delivery-box 1.png',
+            'assets/customer 1.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -56,7 +56,7 @@ class _DetailsPageState extends State<DetailsPage> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Détails Client'),
+        title: Text('Details Client'),
         actions: [
           IconButton(
             icon: Image.asset(

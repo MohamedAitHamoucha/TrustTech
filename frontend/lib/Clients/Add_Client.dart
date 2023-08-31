@@ -41,7 +41,7 @@ class MyAddClientApp extends StatelessWidget {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/delivery-box 1.png',
+            'assets/customer 1.png',
             width: 30,
             height: 30,
             color: Colors.white,

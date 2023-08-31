@@ -48,6 +48,12 @@ flutter:
     - assets/user 1.png
     - assets/backarr.png
     - assets/threepp.png
+    - assets/categories.png
+    - assets/ressources.png
+    - assets/taches.png
+    - assets/typeprojet.png
+    - assets/ressourceprojet.png
+    - assets/etat.png
 
 dev_dependencies:
   flutter_test:

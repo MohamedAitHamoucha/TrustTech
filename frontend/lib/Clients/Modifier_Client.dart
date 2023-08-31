@@ -69,7 +69,7 @@ class _ModifierClientsState extends State<ModifierClients> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/delivery-box 1.png',
+            'assets/customer 1.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -78,7 +78,7 @@ class _ModifierClientsState extends State<ModifierClients> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Modifier Client'),
+        title: Text('Modifier le Client'),
         actions: [
           IconButton(
             icon: Image.asset(
