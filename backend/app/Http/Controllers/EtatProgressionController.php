@@ -22,14 +22,19 @@ class EtatProgressionController extends Controller
         return response()->json(['message' => 'Etat de progression added successfully'], 201);
     }
 
-    public function updateEtatProgression(Request $request, $id)
+    public function updateEtatProgression(Request $request)
     {
         $validatedData = $request->validate([
             'libelle' => 'required|string|max:255',
             'ordre' => 'required|integer',
         ]);
 
-        $etatProgression = EtatProgression::findOrFail($id);
+        $etatProgression = EtatProgression::where('libelle', $request->input('libelle'))->first();
+
+        if (!$etatProgression) {
+            return response()->json(['error' => 'Etat de progression not found'], 404);
+        }
+
         $etatProgression->libelle = $validatedData['libelle'];
         $etatProgression->ordre = $validatedData['ordre'];
         $etatProgression->save();
@@ -37,20 +42,38 @@ class EtatProgressionController extends Controller
         return response()->json(['message' => 'Etat de progression updated successfully']);
     }
 
-    public function deleteEtatProgression($id)
+    public function deleteEtatProgression(Request $request)
     {
-        $etatProgression = EtatProgression::findOrFail($id);
+        $validatedData = $request->validate([
+            'libelle' => 'required|string|max:255',
+        ]);
+
+        $etatProgression = EtatProgression::where('libelle', $request->input('libelle'))->first();
+
+        if (!$etatProgression) {
+            return response()->json(['error' => 'Etat de progression not found'], 404);
+        }
+
         $etatProgression->delete();
 
         return response()->json(['message' => 'Etat de progression deleted successfully']);
     }
 
-    public function getEtatProgressionDetails($id)
+    public function getEtatProgressionDetails(Request $request)
     {
-        $etatProgression = EtatProgression::findOrFail($id);
+        $validatedData = $request->validate([
+            'libelle' => 'required|string|max:255',
+        ]);
+
+        $etatProgression = EtatProgression::where('libelle', $request->input('libelle'))->first();
+
+        if (!$etatProgression) {
+            return response()->json(['error' => 'Etat de progression not found'], 404);
+        }
 
         return response()->json(['etatProgression' => $etatProgression]);
     }
+
     public function getAllEtatProgression(Request $request)
     {
         $etatProgressions = EtatProgression::all();

@@ -27,13 +27,20 @@ class RessourcesController extends Controller
     public function updateResource(Request $request)
     {
         $validatedData = $request->validate([
+            'id' => 'required|string|max:255', // Change 'id' to 'type'
             'type' => 'required|string|max:255',
             'unite' => 'required|string|max:255',
             'fournisseur' => 'required|string|max:255',
         ]);
 
-        $resource = Ressources::findOrFail($request->id);
-        $resource->type = $validatedData['type'];
+        // Find the resource by 'type'
+        $resource = Ressources::where('type', $validatedData['type'])->first();
+
+        if (!$resource) {
+            return response()->json(['error' => 'Resource not found'], 404);
+        }
+
+        $resource->id = $validatedData['id']; // Update the 'id' field if needed
         $resource->unite = $validatedData['unite'];
         $resource->fournisseur = $validatedData['fournisseur'];
         $resource->save();
@@ -43,7 +50,17 @@ class RessourcesController extends Controller
 
     public function deleteResource(Request $request)
     {
-        $resource = Ressources::findOrFail($request->id);
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255', // Change 'id' to 'type'
+        ]);
+
+        // Find the resource by 'type'
+        $resource = Ressources::where('type', $validatedData['type'])->first();
+
+        if (!$resource) {
+            return response()->json(['error' => 'Resource not found'], 404);
+        }
+
         $resource->delete();
 
         return response()->json(['message' => 'Resource deleted successfully']);
@@ -51,10 +68,20 @@ class RessourcesController extends Controller
 
     public function getResourceDetails(Request $request)
     {
-        $resource = Ressources::findOrFail($request->id);
+        $validatedData = $request->validate([
+            'type' => 'required|string|max:255', // Change 'id' to 'type'
+        ]);
+
+        // Find the resource by 'type'
+        $resource = Ressources::where('type', $validatedData['type'])->first();
+
+        if (!$resource) {
+            return response()->json(['error' => 'Resource not found'], 404);
+        }
 
         return response()->json(['resource' => $resource]);
     }
+
     public function getAllResources(Request $request)
     {
         $resources = Ressources::all();

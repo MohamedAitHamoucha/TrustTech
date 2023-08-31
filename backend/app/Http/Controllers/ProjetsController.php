@@ -100,6 +100,7 @@ class ProjetsController extends Controller
 
         return response()->json(['project' => $project]);
     }
+
     public function getAllProjects(Request $request)
     {
         $projects = Projets::all();
