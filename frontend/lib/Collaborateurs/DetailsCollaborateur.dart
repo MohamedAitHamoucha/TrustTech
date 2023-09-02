@@ -3,34 +3,34 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DetailsPage extends StatefulWidget {
-  final String type;
+  final String nom;
   final String serverURL;
 
-  DetailsPage({required this.type, required this.serverURL});
+  DetailsPage({required this.nom, required this.serverURL});
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  Map<String, dynamic> resourceDetails = {};
+  Map<String, dynamic> collaborateurDetails = {};
 
   @override
   void initState() {
     super.initState();
-    fetchResourceDetails();
+    fetchCollaborateurDetails();
   }
 
-  Future<void> fetchResourceDetails() async {
+  Future<void> fetchCollaborateurDetails() async {
     final response = await http.get(
-      Uri.parse('${widget.serverURL}/api/getResourceDetails?type=${widget.type}'),
+      Uri.parse('${widget.serverURL}/api/getCollaborateursDetails?nom=${widget.nom}'),
     );
 
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('resource')) {
+      if (responseBody != null && responseBody.containsKey('collaborateur')) {
         setState(() {
-          resourceDetails = responseBody['resource'];
+          collaborateurDetails = responseBody['collaborateur'];
         });
       } else {
         // Handle error: The response body is not as expected
@@ -47,7 +47,7 @@ class _DetailsPageState extends State<DetailsPage> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/ressources.png',
+            'assets/collaboration 1.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -56,7 +56,7 @@ class _DetailsPageState extends State<DetailsPage> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Details Ressource'),
+        title: Text('Details Collaborateur'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -74,7 +74,7 @@ class _DetailsPageState extends State<DetailsPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
-            child: DetailsList(resourceDetails: resourceDetails),
+            child: DetailsList(collaborateurDetails: collaborateurDetails),
           ),
         ),
       ),
@@ -83,17 +83,17 @@ class _DetailsPageState extends State<DetailsPage> {
 }
 
 class DetailsList extends StatelessWidget {
-  final Map<String, dynamic> resourceDetails;
+  final Map<String, dynamic> collaborateurDetails;
 
-  DetailsList({required this.resourceDetails});
+  DetailsList({required this.collaborateurDetails});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: resourceDetails.length,
+      itemCount: collaborateurDetails.length,
       itemBuilder: (context, index) {
-        String label = resourceDetails.keys.elementAt(index);
-        String value = resourceDetails[label].toString();
+        String label = collaborateurDetails.keys.elementAt(index);
+        String value = collaborateurDetails[label].toString();
 
         return ListTile(
           title: Text(

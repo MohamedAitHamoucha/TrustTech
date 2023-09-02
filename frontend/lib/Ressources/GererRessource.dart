@@ -19,7 +19,7 @@ class MyRessourceApp extends StatefulWidget {
 
 class _MyRessourceAppState extends State<MyRessourceApp> {
   GlobalKey<_MyRessourceAppState> scaffoldKey = GlobalKey();
-  final serverURL = Constants.baseServerUrl;
+  final serverURL = Constants.baseServerUrl; // Replace with your server URL
 
   List<dynamic> resources = [];
   TextEditingController searchController = TextEditingController();
@@ -56,13 +56,13 @@ class _MyRessourceAppState extends State<MyRessourceApp> {
     }
 
     final response = await http
-        .get(Uri.parse('$serverURL/api/getResourceDetails?query=$query'));
+        .get(Uri.parse('$serverURL/api/getResourceDetails?type=$query'));
 
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('resources')) {
+      if (responseBody != null && responseBody.containsKey('resource')) {
         setState(() {
-          resources = responseBody['resources'];
+          resources = [responseBody['resource']];
         });
       } else {
         // Handle error: The response body is not as expected
@@ -89,7 +89,7 @@ class _MyRessourceAppState extends State<MyRessourceApp> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Gérer les Ressources'),
+        title: Text('Gérer les Ressource'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -133,19 +133,16 @@ class _MyRessourceAppState extends State<MyRessourceApp> {
                 final result = await Navigator.push(
                   scaffoldKey.currentContext!,
                   MaterialPageRoute(
-                    builder: (context) => MyAddRessourceApp(
-                      serverURL: serverURL,
-                      fournisseurs:
-                          fournisseurs, // Pass the fournisseurs list here
-                    ),
+                    builder: (context) =>
+                        MyAddRessourceApp(serverURL: serverURL),
                   ),
                 );
 
                 if (result == true) {
-                  fetchRessources(); // Refresh the list of ressources after adding
+                  fetchResources();
                 }
               },
-              child: Text('Ajouter'),
+              child: Text('Add'),
             ),
           ),
           SingleChildScrollView(
@@ -180,7 +177,7 @@ class _MyRessourceAppState extends State<MyRessourceApp> {
 
   Widget buildOptionsDropdown(dynamic resource) {
     return DropdownButton<String>(
-      items: <String>['Modifier', 'Details', 'Supprimer'].map((String value) {
+      items: <String>['Modifier', 'Supprimer', 'Details'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -194,11 +191,11 @@ class _MyRessourceAppState extends State<MyRessourceApp> {
     );
   }
 
-  Future<void> deleteResource(String name) async {
+  Future<void> deleteResource(String type) async {
     final response = await http.delete(
       Uri.parse('$serverURL/api/deleteResource'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'name': name},
+      body: {'type': type},
     );
 
     if (response.statusCode == 200) {
@@ -210,27 +207,27 @@ class _MyRessourceAppState extends State<MyRessourceApp> {
   }
 
   void handleOptionSelection(String option, dynamic resource) async {
-    /*if (option == 'Modifier') {
+    if (option == 'Modifier') {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) =>
-              MyModifyResourceApp(name: resource['name'], serverURL: serverURL),
+              ModifierRessource(type: resource['type'], serverURL: serverURL),
         ),
       );
     } else if (option == 'Supprimer') {
-      await deleteResource(resource['name']);
+      await deleteResource(resource['type']);
     } else if (option == 'Details') {
-      navigateToDetailsPage(context, resource['name']);
-    }*/
+      navigateToDetailsPage(context, resource['type']);
+    }
   }
-  /*void navigateToDetailsPage(BuildContext context, String name) {
+
+  void navigateToDetailsPage(BuildContext context, String type) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            MyDetailsResourcePage(name: name, serverURL: serverURL),
+        builder: (context) => DetailsPage(type: type, serverURL: serverURL),
       ),
     );
-  }*/
+  }
 }

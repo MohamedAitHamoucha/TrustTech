@@ -3,6 +3,10 @@ import 'admin.dart';
 import 'Fournisseurs/Gérer_les_Fournisseurs.dart';
 import 'Clients/Gerer_les_Clients.dart';
 import 'Categories/GererCategorie.dart';
+import 'Ressources/GererRessource.dart';
+import 'Collaborateurs/GererCollaborateur.dart';
+import 'EtatProgression/GererEtatProgression.dart';
+import 'Typeprojets/GererTypeprojets.dart';
 
 class MyHomeApp extends StatelessWidget {
   final String username;
@@ -208,7 +212,40 @@ class MyHomeApp extends StatelessWidget {
                 builder: (context) => MyCategorieApp(),
               ),
             );
-          } else {
+          }
+          else if (buttonText == 'Gérer les\nRessources') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyRessourceApp(),
+              ),
+            );
+          }
+          else if (buttonText == 'Gérer les\nCollaborateurs') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyCollaborateurApp(),
+              ),
+            );
+          }
+          else if (buttonText == "Gérer l'Etat\nde Progression") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyEtatProgressionApp(),
+              ),
+            );
+          }
+          else if (buttonText == "Gérer les\nTypes de Projet") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyTypeprojetApp(),
+              ),
+            );
+          }
+           else {
             print('Button pressed: $buttonText');
           }
         },

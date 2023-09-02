@@ -4,9 +4,8 @@ import 'dart:convert';
 
 class MyAddRessourceApp extends StatefulWidget {
   final String serverURL;
-  final List<dynamic> fournisseurs; // List of fournisseurs
 
-  MyAddRessourceApp({required this.serverURL, required this.fournisseurs});
+  MyAddRessourceApp({required this.serverURL});
 
   @override
   _MyAddRessourceAppState createState() => _MyAddRessourceAppState();
@@ -17,16 +16,42 @@ class _MyAddRessourceAppState extends State<MyAddRessourceApp> {
 
   TextEditingController typeController = TextEditingController();
   TextEditingController uniteController = TextEditingController();
-  String selectedFournisseur = ''; // To store the selected fournisseur
+  String? selectedFournisseur; // To store the selected fournisseur
+
+  List<dynamic> fournisseurs = []; // Store the list of fournisseurs
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFournisseurs(); // Fetch fournisseurs data when the widget initializes
+  }
+
+  Future<void> fetchFournisseurs() async {
+    final response = await http.get(Uri.parse('${widget.serverURL}/api/getAllFournisseurs'));
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      if (responseBody != null && responseBody.containsKey('fournisseurs')) {
+        setState(() {
+          fournisseurs = responseBody['fournisseurs'];
+          if (fournisseurs.isNotEmpty) {
+            selectedFournisseur = fournisseurs[0]['id'].toString(); // Initialize with the first fournisseur
+          }
+        });
+      }
+    } else {
+      // Handle error
+    }
+  }
 
   Future<void> addRessource(BuildContext context) async {
     final response = await http.post(
-      Uri.parse('${widget.serverURL}/api/addRessource'),
+      Uri.parse('${widget.serverURL}/api/addResource'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'type': typeController.text,
         'unite': uniteController.text,
-        'fournisseur': selectedFournisseur, // Use the selected fournisseur
+        'fournisseur': selectedFournisseur,
       }),
     );
 
@@ -74,21 +99,6 @@ class _MyAddRessourceAppState extends State<MyAddRessourceApp> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              DropdownButton<String>(
-                value: selectedFournisseur,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedFournisseur = newValue!;
-                  });
-                },
-                items: widget.fournisseurs.map<DropdownMenuItem<String>>((fournisseur) {
-                  return DropdownMenuItem<String>(
-                    value: fournisseur['id'].toString(), // Use the fournisseur's ID as the value
-                    child: Text(fournisseur['nom']), // Display the fournisseur's nom
-                  );
-                }).toList(),
-                hint: Text('Sélectionner un fournisseur'), // Initial hint text
-              ),
               TextField(
                 controller: typeController,
                 decoration: InputDecoration(labelText: 'Type'),
@@ -96,6 +106,22 @@ class _MyAddRessourceAppState extends State<MyAddRessourceApp> {
               TextField(
                 controller: uniteController,
                 decoration: InputDecoration(labelText: 'Unité'),
+              ),
+              DropdownButton<String>(
+                value: selectedFournisseur,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedFournisseur = newValue;
+                  });
+                },
+                items: fournisseurs.map<DropdownMenuItem<String>>((fournisseur) {
+                  return DropdownMenuItem<String>(
+                    key: Key(fournisseur['id'].toString()), // Provide a unique key
+                    value: fournisseur['id'].toString(),
+                    child: Text(fournisseur['nom']),
+                  );
+                }).toList(),
+                hint: Text('Sélectionner un fournisseur'),
               ),
               SizedBox(height: 16),
               ElevatedButton(

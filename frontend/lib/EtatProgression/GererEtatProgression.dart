@@ -1,75 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'DetailsCategorie.dart';
-import 'ModifierCategorie.dart';
-import 'AddCategorie.dart';
+import 'DetailsEtatProgression.dart';
+import 'ModifierEtatProgression.dart';
+import 'AddEtatProgression.dart';
 import 'package:frontend/constants.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MyCategorieApp(),
+    home: MyEtatProgressionApp(),
   ));
 }
 
-class MyCategorieApp extends StatefulWidget {
+class MyEtatProgressionApp extends StatefulWidget {
   @override
-  _MyCategorieAppState createState() => _MyCategorieAppState();
+  _MyEtatProgressionAppState createState() => _MyEtatProgressionAppState();
 }
 
-class _MyCategorieAppState extends State<MyCategorieApp> {
-  GlobalKey<_MyCategorieAppState> scaffoldKey = GlobalKey();
+class _MyEtatProgressionAppState extends State<MyEtatProgressionApp> {
+  GlobalKey<_MyEtatProgressionAppState> scaffoldKey = GlobalKey();
   final serverURL = Constants.baseServerUrl;
 
-  List<dynamic> categories = [];
+  List<dynamic> etatProgressions = [];
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchCategories();
+    fetchEtatProgressions();
   }
 
-  Future<void> fetchCategories() async {
+  Future<void> fetchEtatProgressions() async {
     final response =
-        await http.get(Uri.parse('$serverURL/api/getAllCategories'));
+        await http.get(Uri.parse('$serverURL/api/getAllEtatProgression'));
+
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('categories')) {
+      if (responseBody != null &&
+          responseBody.containsKey('etatProgressions')) {
         setState(() {
-          categories = responseBody['categories'];
+          etatProgressions = responseBody['etatProgressions'];
         });
       } else {
         // Handle error: The response body is not as expected
-        print('Response body does not contain "categories".');
       }
     } else {
       // Handle error: The API response status code is not 200
-      print('API request failed with status code ${response.statusCode}');
     }
   }
 
-  // Function to search categories
-  Future<void> searchCategories(String query) async {
+  Future<void> searchEtatProgressions(String query) async {
     if (query.isEmpty) {
-      fetchCategories();
+      fetchEtatProgressions();
       return;
     }
 
-    final response = await http
-        .get(Uri.parse('$serverURL/api/getCategorieDetails?nom=$query'));
-
+    final response = await http.get(
+        Uri.parse('$serverURL/api/getEtatProgressionDetails?libelle=$query'));
     if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('category')) {
-        setState(() {
-          categories = [responseBody['category']];
-        });
-      } else {
-        // Handle error: The response body is not as expected
-      }
+      setState(() {
+        etatProgressions = [json.decode(response.body)['etatProgression']];
+      });
     } else {
-      // Handle error: The API response status code is not 200
+      // Handle error
     }
   }
 
@@ -81,7 +74,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/categories.png',
+            'assets/etat.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -90,7 +83,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Gérer les Categories'),
+        title: Text('Gérer les Etats de Progression'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -121,7 +114,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                 ),
                 TextButton(
                   onPressed: () {
-                    searchCategories(searchController.text);
+                    searchEtatProgressions(searchController.text);
                   },
                   child: Text('Search'),
                 ),
@@ -135,13 +128,12 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                   scaffoldKey
                       .currentContext!, // Use the scaffoldKey to access the context
                   MaterialPageRoute(
-                    builder: (context) =>
-                        MyAddCategorieApp(serverURL: serverURL),
+                    builder: (context) => MyAddEtatProgressiontApp(serverURL: serverURL),
                   ),
                 );
 
                 if (result == true) {
-                  fetchCategories(); // Refresh the list of categories after adding
+                  fetchEtatProgressions(); // Refresh the list of etatProgressions after adding
                 }
               },
               child: Text('Ajouter'),
@@ -152,7 +144,8 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
             child: DataTable(
               columns: [
                 DataColumn(label: Text('ID')),
-                DataColumn(label: Text('Nom')),
+                DataColumn(label: Text('Libelle')),
+                DataColumn(label: Text('order')),
                 DataColumn(
                   label: Text(
                     'Options',
@@ -161,11 +154,14 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                   numeric: true,
                 ),
               ],
-              rows: categories.map<DataRow>((categorie) {
+              rows: etatProgressions.map<DataRow>((etatProgression) {
                 return DataRow(cells: [
-                  DataCell(Text(categorie['id'].toString())),
-                  DataCell(Text(categorie['nom'])),
-                  DataCell(buildOptionsDropdown(categorie)),
+                  DataCell(Text(etatProgression['id'].toString())),
+                  DataCell(Text(etatProgression['libelle'])),
+                  DataCell(Text(etatProgression['ordre'] != null
+                      ? etatProgression['ordre'].toString()
+                      : 'N/A')),
+                  DataCell(buildOptionsDropdown(etatProgression)),
                 ]);
               }).toList(),
             ),
@@ -175,9 +171,9 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
     );
   }
 
-  Widget buildOptionsDropdown(dynamic categorie) {
+  Widget buildOptionsDropdown(dynamic etatProgression) {
     return DropdownButton<String>(
-      items: <String>['Supprimer', 'Details'].map((String value) {
+      items: <String>['Modifier', 'Supprimer', 'Details'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -185,41 +181,50 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
       }).toList(),
       onChanged: (String? newValue) {
         if (newValue != null) {
-          handleOptionSelection(newValue, categorie);
+          handleOptionSelection(newValue, etatProgression);
         }
       },
     );
   }
 
-  Future<void> deleteCategorie(String nom) async {
+  Future<void> deleteEtatProgression(String libelle) async {
     final response = await http.delete(
-      Uri.parse('$serverURL/api/deleteCategorie'),
+      Uri.parse('$serverURL/api/deleteEtatProgression'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'nom': nom},
+      body: {'libelle': libelle},
     );
 
     if (response.statusCode == 200) {
-      fetchCategories(); // Refresh the list of categories
+      fetchEtatProgressions(); // Refresh the list of etatProgressions
     } else {
       // Handle deletion error
       print('Deletion error: ${response.statusCode}');
     }
   }
 
-  void handleOptionSelection(String option, dynamic categorie) async {
+  void handleOptionSelection(String option, dynamic etatProgression) async {
+    if (option == 'Modifier') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ModifierEtatProgressions(libelle: etatProgression['libelle'], serverURL: serverURL),
+        ),
+      );
+    } else
     if (option == 'Supprimer') {
-      await deleteCategorie(categorie['nom']);
+      await deleteEtatProgression(etatProgression['libelle']);
     } else if (option == 'Details') {
       print('Navigating to details page'); // Add this line
-      navigateToDetailsPage(context, categorie['nom']);
+      navigateToDetailsPage(context, etatProgression['libelle']);
     }
   }
 
-  void navigateToDetailsPage(BuildContext context, String nom) {
+  void navigateToDetailsPage(BuildContext context, String libelle) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailsCategorie(nom: nom, serverURL: serverURL),
+        builder: (context) => DetailsPage(libelle: libelle, serverURL: serverURL),
       ),
     );
   }

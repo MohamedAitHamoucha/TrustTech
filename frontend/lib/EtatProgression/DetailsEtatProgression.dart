@@ -3,42 +3,42 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DetailsPage extends StatefulWidget {
-  final String type;
+  final String libelle;
   final String serverURL;
 
-  DetailsPage({required this.type, required this.serverURL});
+  DetailsPage({required this.libelle, required this.serverURL});
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  Map<String, dynamic> resourceDetails = {};
+  Map<String, dynamic> etatprogressionDetails = {};
 
   @override
   void initState() {
     super.initState();
-    fetchResourceDetails();
+    fetchEtatprogressionDetails();
   }
 
-  Future<void> fetchResourceDetails() async {
-    final response = await http.get(
-      Uri.parse('${widget.serverURL}/api/getResourceDetails?type=${widget.type}'),
-    );
+  Future<void> fetchEtatprogressionDetails() async {
+  final response = await http.get(
+    Uri.parse('${widget.serverURL}/api/getEtatProgressionDetails?libelle=${widget.libelle}'),
+  );
 
-    if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('resource')) {
-        setState(() {
-          resourceDetails = responseBody['resource'];
-        });
-      } else {
-        // Handle error: The response body is not as expected
-      }
+  if (response.statusCode == 200) {
+    final responseBody = json.decode(response.body);
+    if (responseBody != null && responseBody.containsKey('etatProgression')) {
+      setState(() {
+        etatprogressionDetails = responseBody['etatProgression'];
+      });
     } else {
-      // Handle error: The API response status code is not 200
+      // Handle error: The response body is not as expected
     }
+  } else {
+    // Handle error: The API response status code is not 200
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _DetailsPageState extends State<DetailsPage> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/ressources.png',
+            'assets/etat.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -56,7 +56,7 @@ class _DetailsPageState extends State<DetailsPage> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Details Ressource'),
+        title: Text('Details Etat de progression'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -74,7 +74,7 @@ class _DetailsPageState extends State<DetailsPage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
-            child: DetailsList(resourceDetails: resourceDetails),
+            child: DetailsList(etatprogressionDetails: etatprogressionDetails),
           ),
         ),
       ),
@@ -83,17 +83,17 @@ class _DetailsPageState extends State<DetailsPage> {
 }
 
 class DetailsList extends StatelessWidget {
-  final Map<String, dynamic> resourceDetails;
+  final Map<String, dynamic> etatprogressionDetails;
 
-  DetailsList({required this.resourceDetails});
+  DetailsList({required this.etatprogressionDetails});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: resourceDetails.length,
+      itemCount: etatprogressionDetails.length,
       itemBuilder: (context, index) {
-        String label = resourceDetails.keys.elementAt(index);
-        String value = resourceDetails[label].toString();
+        String label = etatprogressionDetails.keys.elementAt(index);
+        String value = etatprogressionDetails[label].toString();
 
         return ListTile(
           title: Text(

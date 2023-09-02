@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-void main() {
-  runApp(MaterialApp(
-    home: MyApp(),
-  ));
-}
+class MyAddTypeProjetApp extends StatelessWidget {
+  final String serverURL;
 
-class MyApp extends StatelessWidget {
+  MyAddTypeProjetApp({required this.serverURL});
+
+  TextEditingController typeController = TextEditingController();
+
+  Future<void> addTypeProjet(BuildContext context) async {
+    final response = await http.post(
+      Uri.parse('$serverURL/api/addTypeProjet'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'type': typeController.text,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      Navigator.pop(context, true);
+    } else {
+      // Handle error
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +32,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/collaboration 1.png',
+            'assets/typeprojet.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -23,7 +41,7 @@ class MyApp extends StatelessWidget {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Supprimer un Collaborateur'),
+        title: Text('Ajouter un Type de Projet'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -43,29 +61,15 @@ class MyApp extends StatelessWidget {
           child: Column(
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'ID'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Nom'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Email'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Téléphone'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Titre'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Resource'),
+                controller: typeController,
+                decoration: InputDecoration(labelText: 'Type'),
               ),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  // Handle the button press for submitting the form
+                  addTypeProjet(context);
                 },
-                child: Text('Suprrimer'),
+                child: Text('Ajouter'),
               ),
             ],
           ),
