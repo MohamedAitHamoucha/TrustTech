@@ -27,10 +27,9 @@ class RessourcesController extends Controller
     public function updateResource(Request $request)
     {
         $validatedData = $request->validate([
-            'id' => 'required|string|max:255', // Change 'id' to 'type'
             'type' => 'required|string|max:255',
             'unite' => 'required|string|max:255',
-            'fournisseur' => 'required|string|max:255',
+            'fournisseur' => 'required|exists:Fournisseurs,id', // Check if fournisseur exists in Fournisseurs table
         ]);
 
         // Find the resource by 'type'
@@ -40,13 +39,14 @@ class RessourcesController extends Controller
             return response()->json(['error' => 'Resource not found'], 404);
         }
 
-        $resource->id = $validatedData['id']; // Update the 'id' field if needed
+        // Update the resource fields
         $resource->unite = $validatedData['unite'];
         $resource->fournisseur = $validatedData['fournisseur'];
         $resource->save();
 
         return response()->json(['message' => 'Resource updated successfully']);
     }
+
 
     public function deleteResource(Request $request)
     {

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EtatProgression extends Model
 {
     use HasFactory;
-    protected $table = 'EtatProgression';
+    protected $table = 'etatprogression';
     protected $fillable = [
         'id','libelle','ordre'
     ];

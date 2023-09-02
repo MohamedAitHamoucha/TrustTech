@@ -31,24 +31,24 @@ class CollaborateursController extends Controller
     public function updateCollaborateurs(Request $request)
     {
         $validatedData = $request->validate([
-            'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:collaborateurs,email,' . $request->input('nom'),
+            'email' => 'required|email|unique:Collaborateurs,email,' . $request->input('nom'),
             'telephone' => 'required|string|max:20',
             'titre' => 'required|string|max:255',
-            'ressource' => 'required|string|max:255',
+            'ressource' => 'required|exists:Ressources,id',
         ]);
 
+        // Find the collaborateur by 'nom'
         $collaborateur = Collaborateurs::where('nom', $request->input('nom'))->first();
 
         if (!$collaborateur) {
             return response()->json(['error' => 'Collaborateur not found'], 404);
         }
 
-        $collaborateur->nom = $validatedData['nom'];
+        // Update the collaborateur fields
         $collaborateur->email = $validatedData['email'];
         $collaborateur->telephone = $validatedData['telephone'];
         $collaborateur->titre = $validatedData['titre'];
-        $collaborateur->resource = $validatedData['ressource'];
+        $collaborateur->ressource = $validatedData['ressource'];
         $collaborateur->save();
 
         return response()->json(['message' => 'Collaborateur updated successfully']);

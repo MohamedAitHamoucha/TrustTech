@@ -4,7 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FournisseursController;
 use App\Http\Controllers\ClientsController;
-
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\RessourcesController;
+use App\Http\Controllers\CollaborateursController;
+use App\Http\Controllers\EtatProgressionController;
+use App\Http\Controllers\TypeProjetController;
 //Users
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
@@ -30,7 +34,7 @@ Route::delete('deleteCategorie', [CategoriesController::class, 'deleteCategorie'
 Route::get('getCategorieDetails', [CategoriesController::class, 'getCategorieDetails']);
 Route::get('getAllCategories', [CategoriesController::class, 'getAllCategories']);
 
-// Collaborateures khdam
+// Collaborateurs
 
 Route::post('addCollaborateurs', [CollaborateursController::class, 'addCollaborateurs']);
 Route::put('updateCollaborateurs', [CollaborateursController::class, 'updateCollaborateurs']);
@@ -38,21 +42,21 @@ Route::delete('deleteCollaborateurs', [CollaborateursController::class, 'deleteC
 Route::get('getCollaborateursDetails', [CollaborateursController::class, 'getCollaborateursDetails']);
 Route::get('getAllCollaborateurs', [CollaborateursController::class, 'getAllCollaborateurs']);
 
-// Resources khdam
+// Resources
 Route::post('addResource', [RessourcesController::class, 'addResource']);
 Route::put('updateResource', [RessourcesController::class, 'updateResource']);
 Route::delete('deleteResource', [RessourcesController::class, 'deleteResource']);
 Route::get('getResourceDetails', [RessourcesController::class, 'getResourceDetails']);
 Route::get('getAllResources', [RessourcesController::class, 'getAllResources']);
 
-// TypesProjets khdam
-Route::post('addTypeProject', [TypeProjetController::class, 'addTypeProject']);
-Route::put('updateTypeProject', [TypeProjetController::class, 'updateTypeProject']);
-Route::delete('deleteTypeProject', [TypeProjetController::class, 'deleteTypeProject']);
-Route::get('getTypeProjectDetails', [TypeProjetController::class, 'getTypeProjectDetails']);
-Route::get('getAllTypeProjects', [TypeProjetController::class, 'getAllTypeProjects']);
+// TypesProjets
+Route::post('addTypeProjet', [TypeProjetController::class, 'addTypeProjet']);
+Route::put('updateTypeProjet', [TypeProjetController::class, 'updateTypeProjet']);
+Route::delete('deleteTypeProjet', [TypeProjetController::class, 'deleteTypeProjet']);
+Route::get('getTypeProjetDetails', [TypeProjetController::class, 'getTypeProjetDetails']);
+Route::get('getAllTypeProjets', [TypeProjetController::class, 'getAllTypeProjets']);
 
-// Projets  khdam
+// Projets
 
 Route::post('addProject', [ProjetsController::class, 'addProject']);
 Route::put('updateProject', [ProjetsController::class, 'updateProject']);
@@ -60,7 +64,7 @@ Route::delete('deleteProject', [ProjetsController::class, 'deleteProject']);
 Route::get('getProjectDetails', [ProjetsController::class, 'getProjectDetails']);
 Route::get('getAllProjects', [ProjetsController::class, 'getAllProjects']);
 
-//EtatProgression  khdam 
+//EtatProgression
 
 Route::post('addEtatProgression', [EtatProgressionController::class, 'addEtatProgression']);
 Route::put('updateEtatProgression', [EtatProgressionController::class, 'updateEtatProgression']);
@@ -68,21 +72,21 @@ Route::delete('deleteEtatProgression', [EtatProgressionController::class, 'delet
 Route::get('getEtatProgressionDetails', [EtatProgressionController::class, 'getEtatProgressionDetails']);
 Route::get('getAllEtatProgression', [EtatProgressionController::class, 'getAllEtatProgression']);
 
-// ResourcesProjets khdam
+// ResourcesProjets
 Route::post('addResourceProject', [RessourceProjetsController::class, 'addResourceProject']);
 Route::put('updateResourceProject', [RessourceProjetsController::class, 'updateResourceProject']);
 Route::delete('deleteResourceProject', [RessourceProjetsController::class, 'deleteResourceProject']);
 Route::get('getResourceProjectDetails', [RessourceProjetsController::class, 'getResourceProjectDetails']);
 Route::get('getAllResourceProjects', [RessourceProjetsController::class, 'getAllResourceProjects']);
 
-// Taches Khdama
+// Taches
 Route::post('addTache', [TachesController::class, 'addTache']);
 Route::put('updateTache', [TachesController::class, 'updateTache']);
 Route::delete('deleteTache', [TachesController::class, 'deleteTache']);
 Route::get('getTacheDetails', [TachesController::class, 'getTacheDetails']);
 Route::get('getAllTaches', [TachesController::class, 'getAllTaches']);
 
-// Materiels Khdama
+// Materiels
 Route::post('addMaterial', [MaterielsController::class, 'addMaterial']);
 Route::put('updateMateriel', [MaterielsController::class, 'updateMateriel']);
 Route::delete('deleteMateriel', [MaterielsController::class, 'deleteMateriel']);
