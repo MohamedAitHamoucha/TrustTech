@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'admin.dart';
 import 'Fournisseurs/Gérer_les_Fournisseurs.dart';
 import 'Clients/Gerer_les_Clients.dart';
+import 'Categories/GererCategorie.dart';
 
 class MyHomeApp extends StatelessWidget {
   final String username;
@@ -198,6 +199,13 @@ class MyHomeApp extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => MyClientApp(),
+              ),
+            );
+          }else if (buttonText == 'Gérer les\nCategories') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyCategorieApp(),
               ),
             );
           } else {
