@@ -7,6 +7,7 @@ import 'Ressources/GererRessource.dart';
 import 'Collaborateurs/GererCollaborateur.dart';
 import 'EtatProgression/GererEtatProgression.dart';
 import 'Typeprojets/GererTypeprojets.dart';
+import 'Projets/GererProjets.dart';
 
 class MyHomeApp extends StatelessWidget {
   final String username;
@@ -112,7 +113,7 @@ class MyHomeApp extends StatelessWidget {
                   _buildButtonWithImageAndText('assets/collaboration 1.png',
                       'Gérer les\nCollaborateurs', context),
                   _buildButtonWithImageAndText(
-                      'assets/project-management 1.png',
+                      'assets/projet.png',
                       'Gérer les\nProjets',
                       context),
                 ],
@@ -210,6 +211,14 @@ class MyHomeApp extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => MyCategorieApp(),
+              ),
+            );
+          }
+          else if (buttonText == 'Gérer les\nProjets') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyProjetApp(),
               ),
             );
           }
