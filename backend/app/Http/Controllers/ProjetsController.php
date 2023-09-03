@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ProjetsController extends Controller
 {
-    public function addProject(Request $request)
+    public function addProjet(Request $request)
     {
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
@@ -15,8 +15,8 @@ class ProjetsController extends Controller
             'date_debut' => 'required|date',
             'date_fin_estimee' => 'required|date',
             'date_fin' => 'nullable|date',
-            'etatprogression' => 'required|numeric',
-            'typeprojet' => 'required|numeric',
+            'etat_progression' => 'required|numeric',
+            'type_projet' => 'required|numeric',
             'client' => 'required|numeric',
             'chef_projet' => 'required|numeric',
         ]);
@@ -27,8 +27,8 @@ class ProjetsController extends Controller
         $project->date_debut = $validatedData['date_debut'];
         $project->date_fin_estimee = $validatedData['date_fin_estimee'];
         $project->date_fin = $validatedData['date_fin'];
-        $project->etatprogression = $validatedData['etatprogression'];
-        $project->typeprojet = $validatedData['typeprojet'];
+        $project->etat_progression = $validatedData['etat_progression'];
+        $project->type_projet = $validatedData['type_projet'];
         $project->client = $validatedData['client'];
         $project->chef_projet = $validatedData['chef_projet'];
         $project->save();
@@ -36,16 +36,16 @@ class ProjetsController extends Controller
         return response()->json(['message' => 'Project added successfully'], 201);
     }
 
-    public function updateProject(Request $request)
+    public function updateProjet(Request $request)
     {
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255',
-            'budget' => 'required|numeric|min:0',
+            'budget' => 'required|string|max:255',
             'date_debut' => 'required|date',
             'date_fin_estimee' => 'required|date',
             'date_fin' => 'nullable|date',
-            'etatprogression' => 'required|numeric',
-            'typeprojet' => 'required|numeric',
+            'etat_progression' => 'required|numeric',
+            'type_projet' => 'required|numeric',
             'client' => 'required|numeric',
             'chef_projet' => 'required|numeric',
         ]);
@@ -60,16 +60,16 @@ class ProjetsController extends Controller
         $project->date_debut = $validatedData['date_debut'];
         $project->date_fin_estimee = $validatedData['date_fin_estimee'];
         $project->date_fin = $validatedData['date_fin'];
-        $project->etatprogression = $validatedData['etatprogression'];
-        $project->typeprojet = $validatedData['typeprojet'];
+        $project->etat_progression = $validatedData['etat_progression'];
+        $project->type_projet = $validatedData['type_projet'];
         $project->client = $validatedData['client'];
         $project->chef_projet = $validatedData['chef_projet'];
         $project->save();
 
-        return response()->json(['message' => 'Project updated successfully']);
+        return response()->json(['message' => 'Projet updated successfully']);
     }
 
-    public function deleteProject(Request $request)
+    public function deleteProjet(Request $request)
     {
         $validatedData = $request->validate([
             'titre' => 'required|string|max:255'
@@ -78,33 +78,33 @@ class ProjetsController extends Controller
         $project = Projets::where('titre', $validatedData['titre'])->first();
 
         if (!$project) {
-            return response()->json(['error' => 'Project not found'], 404);
+            return response()->json(['error' => 'Projet not found'], 404);
         }
 
         $project->delete();
 
-        return response()->json(['message' => 'Project deleted successfully']);
+        return response()->json(['message' => 'Projet deleted successfully']);
     }
 
-    public function getProjectDetails(Request $request)
+    public function getProjetDetails(Request $request)
     {
         $validatedData = $request->validate([
-            'titre' => 'required|string|max:255'
+            'titre' => 'required|string|max:255',
         ]);
-
-        $project = Projets::where('titre', $validatedData['titre'])->first();
-
-        if (!$project) {
+    
+        $facture = Projets::where('titre', $request->input('titre'))->first();
+    
+        if (!$facture) {
             return response()->json(['error' => 'Project not found'], 404);
         }
-
-        return response()->json(['project' => $project]);
+    
+        return response()->json(['projet' => $facture]);
     }
 
-    public function getAllProjects(Request $request)
+    public function getAllProjets(Request $request)
     {
         $projects = Projets::all();
 
-        return response()->json(['projects' => $projects]);
+        return response()->json(['projets' => $projects]);
     }
 }

@@ -9,9 +9,11 @@ use App\Http\Controllers\RessourcesController;
 use App\Http\Controllers\CollaborateursController;
 use App\Http\Controllers\EtatProgressionController;
 use App\Http\Controllers\TypeProjetController;
+use App\Http\Controllers\ProjetsController;
 //Users
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
+Route::get('getAllUsers', [UserController::class, 'getAllUsers']);
 
 //Fournisseurs
 Route::post('addFournisseur', [FournisseursController::class, 'addFournisseur']);
@@ -58,11 +60,11 @@ Route::get('getAllTypeProjets', [TypeProjetController::class, 'getAllTypeProjets
 
 // Projets
 
-Route::post('addProject', [ProjetsController::class, 'addProject']);
-Route::put('updateProject', [ProjetsController::class, 'updateProject']);
-Route::delete('deleteProject', [ProjetsController::class, 'deleteProject']);
-Route::get('getProjectDetails', [ProjetsController::class, 'getProjectDetails']);
-Route::get('getAllProjects', [ProjetsController::class, 'getAllProjects']);
+Route::post('addProjet', [ProjetsController::class, 'addProjet']);
+Route::put('updateProjet', [ProjetsController::class, 'updateProjet']);
+Route::delete('deleteProjet', [ProjetsController::class, 'deleteProjet']);
+Route::get('getProjetDetails', [ProjetsController::class, 'getProjetDetails']);
+Route::get('getAllProjets', [ProjetsController::class, 'getAllProjets']);
 
 //EtatProgression
 

@@ -30,8 +30,6 @@ class UserController extends Controller
         }
     }
 
-
-
     public function register(Request $request)
     {
         $requestData = $request->only(['nom', 'type', 'mot_de_passe']);
@@ -42,5 +40,12 @@ class UserController extends Controller
         } catch (QueryException $e) {
             return response()->json(['error' => 'User registration failed'], 500);
         }
+    }
+
+    public function getAllUsers(Request $request)
+    {
+        $users = User::all();
+
+        return response()->json(['users' => $users]);
     }
 }
