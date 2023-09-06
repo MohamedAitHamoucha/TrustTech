@@ -44,8 +44,8 @@ class UserController extends Controller
 
     public function getAllUsers(Request $request)
     {
-        $users = User::all();
+        $users = User::where('type', 'chef de projet')->get();
 
-        return response()->json(['users' => $users]);
+    return response()->json(['users' => $users]);
     }
 }
