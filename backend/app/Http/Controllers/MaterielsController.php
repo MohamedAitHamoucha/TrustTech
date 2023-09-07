@@ -107,32 +107,8 @@ class MaterielsController extends Controller
 
     public function getAllMaterials(Request $request)
     {
-        $validatedData = $request->validate([
-            'nom' => 'required|string|max:255',
-        ]);
+        $materiels = Materiels::all();
 
-        // Get the 'nom' from the request query
-        $nom = $validatedData['nom'];
-
-        $materials = Materiels::where('nom', $nom)->get();
-
-        if ($materials->isEmpty()) {
-            return response()->json(['message' => 'No materials found'], 404);
-        }
-
-        $materialDetails = [];
-
-        foreach ($materials as $material) {
-            $materialDetails[] = [
-                'nom' => $material->nom,
-                'reference' => $material->reference,
-                'quantite' => $material->quantite,
-                'prix_achat' => $material->prix_achat,
-                'categorie' => $material->categorie,
-                'ressource' => $material->ressource,
-            ];
-        }
-
-        return response()->json(['materialDetails' => $materialDetails]);
+        return response()->json(['materiels' => $materiels]);
     }
 }

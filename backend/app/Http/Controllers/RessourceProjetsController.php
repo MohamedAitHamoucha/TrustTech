@@ -30,6 +30,7 @@ class RessourceProjetsController extends Controller
     {
         // Validate the request data except for 'resource'
         $validatedData = $request->validate([
+            'id' => 'required|numeric',
             'quantite' => 'required|numeric|min:0',
             'prix' => 'required|numeric|min:0',
             'ressource' => 'required|numeric',
@@ -37,10 +38,10 @@ class RessourceProjetsController extends Controller
         ]);
 
         // Get the 'resource' from the request query
-        $resource = $request->query('resource');
+        $id = $request->query('id');
 
         // Find the resource project by 'resource'
-        $resourceProject = RessourceProjets::where('ressource', $resource)->first();
+        $resourceProject = RessourceProjets::where('id', $id)->first();
 
         if (!$resourceProject) {
             return response()->json(['error' => 'Resource project not found'], 404);
@@ -61,10 +62,10 @@ class RessourceProjetsController extends Controller
     public function deleteResourceProject(Request $request)
     {
         $validatedData = $request->validate([
-            'resource' => 'required|numeric',
+            'id' => 'required|numeric',
         ]);
 
-        $resourceProject = RessourceProjets::where('ressource', $validatedData['resource'])->first();
+        $resourceProject = RessourceProjets::where('id', $validatedData['id'])->first();
 
         if (!$resourceProject) {
             return response()->json(['error' => 'Resource project not found'], 404);
@@ -78,10 +79,10 @@ class RessourceProjetsController extends Controller
     public function getResourceProjectDetails(Request $request)
     {
         $validatedData = $request->validate([
-            'resource' => 'required|numeric',
+            'id' => 'required|numeric',
         ]);
 
-        $resourceProject = RessourceProjets::where('ressource', $validatedData['resource'])->first();
+        $resourceProject = RessourceProjets::where('id', $validatedData['id'])->first();
 
         if (!$resourceProject) {
             return response()->json(['error' => 'Resource project not found'], 404);

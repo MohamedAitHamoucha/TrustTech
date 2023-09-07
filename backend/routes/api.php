@@ -10,6 +10,11 @@ use App\Http\Controllers\CollaborateursController;
 use App\Http\Controllers\EtatProgressionController;
 use App\Http\Controllers\TypeProjetController;
 use App\Http\Controllers\ProjetsController;
+use App\Http\Controllers\FacturesController;
+use App\Http\Controllers\TachesController;
+use App\Http\Controllers\MaterielsController;
+use App\Http\Controllers\RessourceProjetsController;
+
 //Users
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
@@ -94,3 +99,10 @@ Route::put('updateMateriel', [MaterielsController::class, 'updateMateriel']);
 Route::delete('deleteMateriel', [MaterielsController::class, 'deleteMateriel']);
 Route::get('getMaterielDetails', [MaterielsController::class, 'getMaterielDetails']);
 Route::get('getAllMaterials', [MaterielsController::class, 'getAllMaterials']);
+
+//Factures
+Route::post('addFacture', [FacturesController::class, 'addFacture']);
+Route::put('updateFacture', [FacturesController::class, 'updateFacture']);
+Route::delete('deleteFacture', [FacturesController::class, 'deleteFacture']);
+Route::get('getFactureDetails', [FacturesController::class, 'getFactureDetails']);
+Route::get('getAllFactureDetails', [FacturesController::class, 'getAllFactureDetails']);

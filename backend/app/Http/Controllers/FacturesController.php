@@ -33,7 +33,7 @@ class FacturesController extends Controller
     public function updateFacture(Request $request)
 {
     $validatedData = $request->validate([
-        'reference' => 'required|string|max:255|unique:factures,reference,' . $request->input('titre'),
+        'reference' => 'required|string|max:255',
         'titre' => 'required|string|max:255',
         'montant' => 'required|numeric|min:0',
         'date_emission' => 'required|date',
@@ -41,13 +41,12 @@ class FacturesController extends Controller
         'projet' => 'required|string|max:255',
     ]);
 
-    $facture = Factures::where('titre', $request->input('titre'))->first();
+    $facture = Factures::where('reference', $request->input('reference'))->first();
 
     if (!$facture) {
         return response()->json(['error' => 'Facture not found'], 404);
     }
 
-    $facture->reference = $validatedData['reference'];
     $facture->titre = $validatedData['titre'];
     $facture->montant = $validatedData['montant'];
     $facture->date_emission = $validatedData['date_emission'];
@@ -61,10 +60,10 @@ class FacturesController extends Controller
 public function deleteFacture(Request $request)
 {
     $validatedData = $request->validate([
-        'titre' => 'required|string|max:255',
+        'reference' => 'required|string|max:255',
     ]);
 
-    $facture = Factures::where('titre', $request->input('titre'))->first();
+    $facture = Factures::where('reference', $request->input('reference'))->first();
 
     if (!$facture) {
         return response()->json(['error' => 'Facture not found'], 404);
@@ -78,10 +77,10 @@ public function deleteFacture(Request $request)
 public function getFactureDetails(Request $request)
 {
     $validatedData = $request->validate([
-        'titre' => 'required|string|max:255',
+        'reference' => 'required|string|max:255',
     ]);
 
-    $facture = Factures::where('titre', $request->input('titre'))->first();
+    $facture = Factures::where('reference', $request->input('reference'))->first();
 
     if (!$facture) {
         return response()->json(['error' => 'Facture not found'], 404);
