@@ -8,6 +8,10 @@ import 'Collaborateurs/GererCollaborateur.dart';
 import 'EtatProgression/GererEtatProgression.dart';
 import 'Typeprojets/GererTypeprojets.dart';
 import 'Projets/GererProjets.dart';
+import 'Factures/GererFactures.dart';
+import 'Taches/GererTaches.dart';
+import 'Materials/GererMaterials.dart';
+import 'Ressourceprojets/GererRessourceprojets.dart';
 
 class MyHomeApp extends StatelessWidget {
   final String username;
@@ -113,9 +117,7 @@ class MyHomeApp extends StatelessWidget {
                   _buildButtonWithImageAndText('assets/collaboration 1.png',
                       'Gérer les\nCollaborateurs', context),
                   _buildButtonWithImageAndText(
-                      'assets/projet.png',
-                      'Gérer les\nProjets',
-                      context),
+                      'assets/projet.png', 'Gérer les\nProjets', context),
                 ],
               ),
               SizedBox(height: 10),
@@ -206,55 +208,78 @@ class MyHomeApp extends StatelessWidget {
                 builder: (context) => MyClientApp(),
               ),
             );
-          }else if (buttonText == 'Gérer les\nCategories') {
+          } else if (buttonText == 'Gérer les\nCategories') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyCategorieApp(),
               ),
             );
-          }
-          else if (buttonText == 'Gérer les\nProjets') {
+          } else if (buttonText == 'Gérer les\nProjets') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyProjetApp(),
               ),
             );
-          }
-          else if (buttonText == 'Gérer les\nRessources') {
+          } else if (buttonText == 'Gérer les\nRessources') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyRessourceApp(),
               ),
             );
-          }
-          else if (buttonText == 'Gérer les\nCollaborateurs') {
+          } else if (buttonText == 'Gérer les\nCollaborateurs') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyCollaborateurApp(),
               ),
             );
-          }
-          else if (buttonText == "Gérer l'Etat\nde Progression") {
+          } else if (buttonText == "Gérer l'Etat\nde Progression") {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyEtatProgressionApp(),
               ),
             );
-          }
-          else if (buttonText == "Gérer les\nTypes de Projet") {
+          } else if (buttonText == "Gérer les\nTypes de Projet") {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MyTypeprojetApp(),
               ),
             );
+          } else if (buttonText == "Gérer les\nFacteures") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyFactureApp(),
+              ),
+            );
+          } else if (buttonText == "Gérer les\nTâches") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyTacheApp(),
+              ),
+            );
+          } else if (buttonText == "Gérer les\nMateriels") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyMaterialApp(),
+              ),
+            );
           }
-           else {
+          else if (buttonText == "Gérer les\nRessources de Projet") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyRessourceprojetsApp(),
+              ),
+            );
+          } else {
             print('Button pressed: $buttonText');
           }
         },

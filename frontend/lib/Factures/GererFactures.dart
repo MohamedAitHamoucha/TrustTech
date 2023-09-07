@@ -1,74 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'DetailsCategorie.dart';
-import 'AddCategorie.dart';
+import 'DetailsFacture.dart';
+import 'ModifierFacture.dart';
+import 'AddFacture.dart';
 import 'package:frontend/constants.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MyCategorieApp(),
+    home: MyFactureApp(),
   ));
 }
 
-class MyCategorieApp extends StatefulWidget {
+class MyFactureApp extends StatefulWidget {
   @override
-  _MyCategorieAppState createState() => _MyCategorieAppState();
+  _MyFactureAppState createState() => _MyFactureAppState();
 }
 
-class _MyCategorieAppState extends State<MyCategorieApp> {
-  GlobalKey<_MyCategorieAppState> scaffoldKey = GlobalKey();
+class _MyFactureAppState extends State<MyFactureApp> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final serverURL = Constants.baseServerUrl;
 
-  List<dynamic> categories = [];
+  List<dynamic> factures = [];
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchCategories();
+    fetchFactures();
   }
 
-  Future<void> fetchCategories() async {
+  Future<void> fetchFactures() async {
     final response =
-        await http.get(Uri.parse('$serverURL/api/getAllCategories'));
+        await http.get(Uri.parse('$serverURL/api/getAllFactureDetails'));
     if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('categories')) {
-        setState(() {
-          categories = responseBody['categories'];
-        });
-      } else {
-        // Handle error: The response body is not as expected
-        print('Response body does not contain "categories".');
-      }
+      setState(() {
+        factures = json.decode(response.body)['factureDetails'];
+      });
     } else {
-      // Handle error: The API response status code is not 200
-      print('API request failed with status code ${response.statusCode}');
+      // Handle error
     }
   }
 
-  // Function to search categories
-  Future<void> searchCategories(String query) async {
+  Future<void> searchFactures(String query) async {
     if (query.isEmpty) {
-      fetchCategories();
+      fetchFactures();
       return;
     }
 
     final response = await http
-        .get(Uri.parse('$serverURL/api/getCategorieDetails?nom=$query'));
-
+        .get(Uri.parse('$serverURL/api/getFactureDetails?reference=$query'));
     if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('category')) {
-        setState(() {
-          categories = [responseBody['category']];
-        });
-      } else {
-        // Handle error: The response body is not as expected
-      }
+      setState(() {
+        factures = [json.decode(response.body)['facture']];
+      });
     } else {
-      // Handle error: The API response status code is not 200
+      // Handle error
     }
   }
 
@@ -80,7 +67,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/categories.png',
+            'assets/bill 1.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -89,7 +76,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Gérer les Categories'),
+        title: Text('Gérer les Factures'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -120,7 +107,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                 ),
                 TextButton(
                   onPressed: () {
-                    searchCategories(searchController.text);
+                    searchFactures(searchController.text);
                   },
                   child: Text('Search'),
                 ),
@@ -131,16 +118,15 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
             child: ElevatedButton(
               onPressed: () async {
                 final result = await Navigator.push(
-                  scaffoldKey
-                      .currentContext!, // Use the scaffoldKey to access the context
+                  context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        MyAddCategorieApp(serverURL: serverURL),
+                        MyAddFactureApp(serverURL: serverURL),
                   ),
                 );
 
                 if (result == true) {
-                  fetchCategories(); // Refresh the list of categories after adding
+                  fetchFactures(); // Refresh the list of factures after adding
                 }
               },
               child: Text('Ajouter'),
@@ -151,7 +137,8 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
             child: DataTable(
               columns: [
                 DataColumn(label: Text('ID')),
-                DataColumn(label: Text('Nom')),
+                DataColumn(label: Text('Reference')),
+                DataColumn(label: Text('Titre')),
                 DataColumn(
                   label: Text(
                     'Options',
@@ -160,11 +147,12 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                   numeric: true,
                 ),
               ],
-              rows: categories.map<DataRow>((categorie) {
+              rows: factures.map<DataRow>((facture) {
                 return DataRow(cells: [
-                  DataCell(Text(categorie['id'].toString())),
-                  DataCell(Text(categorie['nom'])),
-                  DataCell(buildOptionsDropdown(categorie)),
+                  DataCell(Text(facture['id'].toString())),
+                  DataCell(Text(facture['reference'])),
+                  DataCell(Text(facture['titre'])),
+                  DataCell(buildOptionsDropdown(facture)),
                 ]);
               }).toList(),
             ),
@@ -174,9 +162,9 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
     );
   }
 
-  Widget buildOptionsDropdown(dynamic categorie) {
+  Widget buildOptionsDropdown(dynamic facture) {
     return DropdownButton<String>(
-      items: <String>['Supprimer', 'Details'].map((String value) {
+      items: <String>['Modifier', 'Supprimer', 'Details'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -184,41 +172,54 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
       }).toList(),
       onChanged: (String? newValue) {
         if (newValue != null) {
-          handleOptionSelection(newValue, categorie);
+          handleOptionSelection(newValue, facture);
         }
       },
     );
   }
 
-  Future<void> deleteCategorie(String nom) async {
+  Future<void> deleteFacture(String reference) async {
     final response = await http.delete(
-      Uri.parse('$serverURL/api/deleteCategorie'),
+      Uri.parse('$serverURL/api/deleteFacture'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'nom': nom},
+      body: {'reference': reference},
     );
 
     if (response.statusCode == 200) {
-      fetchCategories(); // Refresh the list of categories
+      fetchFactures(); // Refresh the list of factures
     } else {
       // Handle deletion error
       print('Deletion error: ${response.statusCode}');
     }
   }
 
-  void handleOptionSelection(String option, dynamic categorie) async {
-    if (option == 'Supprimer') {
-      await deleteCategorie(categorie['nom']);
+  void handleOptionSelection(String option, dynamic facture) async {
+    if (option == 'Modifier') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ModifierFacture(
+            reference: facture['reference'],
+            serverURL: serverURL,
+          ),
+        ),
+      );
+    } else if (option == 'Supprimer') {
+      await deleteFacture(facture['reference']);
     } else if (option == 'Details') {
       print('Navigating to details page'); // Add this line
-      navigateToDetailsPage(context, categorie['nom']);
+      navigateToDetailsPage(context, facture['reference']);
     }
   }
 
-  void navigateToDetailsPage(BuildContext context, String nom) {
+  void navigateToDetailsPage(BuildContext context, String reference) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailsCategorie(nom: nom, serverURL: serverURL),
+        builder: (context) => DetailsPageFacture(
+          reference: reference,
+          serverURL: serverURL,
+        ),
       ),
     );
   }

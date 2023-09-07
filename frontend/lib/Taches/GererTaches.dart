@@ -1,68 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'DetailsCategorie.dart';
-import 'AddCategorie.dart';
+import 'DetailsTaches.dart';
+import 'ModifierTaches.dart';
+import 'AddTaches.dart';
 import 'package:frontend/constants.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: MyCategorieApp(),
+    home: MyTacheApp(),
   ));
 }
 
-class MyCategorieApp extends StatefulWidget {
+class MyTacheApp extends StatefulWidget {
   @override
-  _MyCategorieAppState createState() => _MyCategorieAppState();
+  _MyTacheAppState createState() => _MyTacheAppState();
 }
 
-class _MyCategorieAppState extends State<MyCategorieApp> {
-  GlobalKey<_MyCategorieAppState> scaffoldKey = GlobalKey();
+class _MyTacheAppState extends State<MyTacheApp> {
+  GlobalKey<_MyTacheAppState> scaffoldKey = GlobalKey();
   final serverURL = Constants.baseServerUrl;
 
-  List<dynamic> categories = [];
+  List<dynamic> taches = [];
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchCategories();
+    fetchTaches();
   }
 
-  Future<void> fetchCategories() async {
-    final response =
-        await http.get(Uri.parse('$serverURL/api/getAllCategories'));
+  Future<void> fetchTaches() async {
+    final response = await http.get(Uri.parse('$serverURL/api/getAllTaches'));
+
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('categories')) {
+      if (responseBody != null && responseBody.containsKey('taches')) {
         setState(() {
-          categories = responseBody['categories'];
+          taches = responseBody['taches'];
         });
       } else {
         // Handle error: The response body is not as expected
-        print('Response body does not contain "categories".');
       }
     } else {
       // Handle error: The API response status code is not 200
-      print('API request failed with status code ${response.statusCode}');
     }
   }
 
-  // Function to search categories
-  Future<void> searchCategories(String query) async {
+  Future<void> searchTaches(String query) async {
     if (query.isEmpty) {
-      fetchCategories();
+      fetchTaches();
       return;
     }
 
     final response = await http
-        .get(Uri.parse('$serverURL/api/getCategorieDetails?nom=$query'));
+        .get(Uri.parse('$serverURL/api/getTacheDetails?nom=$query'));
 
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
-      if (responseBody != null && responseBody.containsKey('category')) {
+      if (responseBody != null && responseBody.containsKey('tache')) {
         setState(() {
-          categories = [responseBody['category']];
+          taches = [responseBody['tache']];
         });
       } else {
         // Handle error: The response body is not as expected
@@ -80,7 +78,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
         backgroundColor: Color.fromRGBO(255, 0, 230, 1),
         leading: IconButton(
           icon: Image.asset(
-            'assets/categories.png',
+            'assets/taches.png',
             width: 30,
             height: 30,
             color: Colors.white,
@@ -89,7 +87,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
             // Handle the onPressed event if needed
           },
         ),
-        title: Text('Gérer les Categories'),
+        title: Text('Gérer les Taches'),
         actions: [
           IconButton(
             icon: Image.asset(
@@ -120,7 +118,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                 ),
                 TextButton(
                   onPressed: () {
-                    searchCategories(searchController.text);
+                    searchTaches(searchController.text);
                   },
                   child: Text('Search'),
                 ),
@@ -134,13 +132,12 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                   scaffoldKey
                       .currentContext!, // Use the scaffoldKey to access the context
                   MaterialPageRoute(
-                    builder: (context) =>
-                        MyAddCategorieApp(serverURL: serverURL),
+                    builder: (context) => MyAddTacheApp(serverURL: serverURL),
                   ),
                 );
 
                 if (result == true) {
-                  fetchCategories(); // Refresh the list of categories after adding
+                  fetchTaches(); // Refresh the list of collaborateurs after adding
                 }
               },
               child: Text('Ajouter'),
@@ -160,11 +157,11 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
                   numeric: true,
                 ),
               ],
-              rows: categories.map<DataRow>((categorie) {
+              rows: taches.map<DataRow>((collaborateur) {
                 return DataRow(cells: [
-                  DataCell(Text(categorie['id'].toString())),
-                  DataCell(Text(categorie['nom'])),
-                  DataCell(buildOptionsDropdown(categorie)),
+                  DataCell(Text(collaborateur['id'].toString())),
+                  DataCell(Text(collaborateur['nom'])),
+                  DataCell(buildOptionsDropdown(collaborateur)),
                 ]);
               }).toList(),
             ),
@@ -174,9 +171,9 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
     );
   }
 
-  Widget buildOptionsDropdown(dynamic categorie) {
+  Widget buildOptionsDropdown(dynamic collaborateur) {
     return DropdownButton<String>(
-      items: <String>['Supprimer', 'Details'].map((String value) {
+      items: <String>['Modifier', 'Supprimer', 'Details'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -184,33 +181,41 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
       }).toList(),
       onChanged: (String? newValue) {
         if (newValue != null) {
-          handleOptionSelection(newValue, categorie);
+          handleOptionSelection(newValue, collaborateur);
         }
       },
     );
   }
 
-  Future<void> deleteCategorie(String nom) async {
+  Future<void> deleteTache(String nom) async {
     final response = await http.delete(
-      Uri.parse('$serverURL/api/deleteCategorie'),
+      Uri.parse('$serverURL/api/deleteTache'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: {'nom': nom},
     );
 
     if (response.statusCode == 200) {
-      fetchCategories(); // Refresh the list of categories
+      fetchTaches();
     } else {
       // Handle deletion error
       print('Deletion error: ${response.statusCode}');
     }
   }
 
-  void handleOptionSelection(String option, dynamic categorie) async {
-    if (option == 'Supprimer') {
-      await deleteCategorie(categorie['nom']);
+  void handleOptionSelection(String option, dynamic collaborateur) async {
+    if (option == 'Modifier') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ModifierTache(nom: collaborateur['nom'], serverURL: serverURL),
+        ),
+      );
+    } else if (option == 'Supprimer') {
+      await deleteTache(collaborateur['nom']);
     } else if (option == 'Details') {
       print('Navigating to details page'); // Add this line
-      navigateToDetailsPage(context, categorie['nom']);
+      navigateToDetailsPage(context, collaborateur['nom']);
     }
   }
 
@@ -218,7 +223,7 @@ class _MyCategorieAppState extends State<MyCategorieApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailsCategorie(nom: nom, serverURL: serverURL),
+        builder: (context) => DetailsPage(nom: nom, serverURL: serverURL),
       ),
     );
   }
